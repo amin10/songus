@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Songus</string>
+    <string name="join_as_attendee">Join an Event</string>
+    <string name="join_as_host">Host an Event</string>
 </resources>
