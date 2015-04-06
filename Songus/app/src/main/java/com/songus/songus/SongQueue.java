@@ -1,0 +1,173 @@
+package com.songus.songus;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import kaaes.spotify.webapi.android.models.Track;
+
+/**
+ * Created by Malek on 4/6/2015.
+ * Mutable. Represents the song queue. Handles votes.
+ */
+public class SongQueue {
+    private List<Song> songs;
+    private Set<SongQueueEventListener> listeners;
+
+    /**
+     * Creates an empty song queue
+     */
+    public SongQueue(){
+        songs = new ArrayList<>();
+        listeners = new HashSet<>();
+    }
+
+    /**
+     * Creates a queue from the default playlist
+     * @param defaultPlaylist contains no duplicates in track ids
+     */
+    public SongQueue(List<Song> defaultPlaylist){
+        this();
+        for(Song song:defaultPlaylist){
+            songs.add(song.getCopy());
+        }
+        reorder();
+    }
+
+    /**
+     *
+     * @return the list of all songs, ordered by votes
+     */
+    public List<Song> getSongs(){
+        List<Song> songsCopy = new ArrayList<>();
+        for(Song song:songs){
+            songsCopy.add(song.getCopy());
+        }
+        return songsCopy;
+    }
+
+    /**
+     * Votes for the track with the same id in the list
+     * @param track the track to be voted for
+     * @return True if voting was successful (track found)
+     */
+    public boolean vote(Track track){
+        for(Song song:songs){
+            if(song.getTrack().id.equals(track.id)){
+                song.vote();
+                reorder();
+                sendChangeNotification();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Withdraws a vote for the track with the same id in the list
+     * @param track the track in question
+     * @return True if action was successful (track found)
+     */
+    public boolean withdrawVote(Track track){
+        for(Song song:songs){
+            if(song.getTrack().id.equals(track.id)){
+                song.withdrawVote();
+                reorder();
+                sendChangeNotification();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Sets the vote count for the track with the same id in the list
+     * @param track the track in question
+     * @param votes the new vote count
+     * @return true if action was successful (track found)
+     */
+    public boolean setVotes(Track track, int votes){
+        for(Song song:songs){
+            if(song.getTrack().id.equals(track.id)){
+                song.setVote(votes);
+                reorder();
+                sendChangeNotification();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Adds a song to the queue if it doesn't exist and is not blocked
+     * @param song song to be added
+     * @return true if the song added (not blocked and doesn't exist)
+     */
+    public boolean addSong(Song song){
+        for(Song otherSong:songs){
+            if(otherSong.sameSong(song)){
+                return false;
+            }
+        }
+        songs.add(song);
+        reorder();
+        sendChangeNotification();
+        return true;
+    }
+
+    /**
+     * Removes a song whose track is equal to the id of the track from the queue
+     * @param track track to be removed
+     * @return true if the track is removed (it exists)
+     */
+    public boolean removeSong(Track track){
+        Song song = null;
+        for(Song potentialSong:songs){
+            if(track.id.equals(potentialSong.getTrack().id)){
+                song = potentialSong;
+                break;
+            }
+        }
+        if(song != null){
+            songs.remove(song);
+            reorder();
+            sendChangeNotification();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Adds the listener to the modifications of the queue to the queue if it doesn't exist
+     * @param listener the listener in question
+     */
+    public void addListener(SongQueueEventListener listener){
+        listeners.add(listener);
+    }
+
+    /**
+     * Remove the listener to the modifications of the queue from the queue if it exists
+     * @param listener the listener in question
+     */
+    public void removeListener(SongQueueEventListener listener){
+        listeners.remove(listener);
+    }
+
+    /**
+     * Notifies listeners of changes
+     */
+    private void sendChangeNotification(){
+        for(SongQueueEventListener listener:listeners){
+            listener.onSongQueueChange(this);
+        }
+    }
+
+    /**
+     * Reorders the list taking into account the votes
+     */
+    private void reorder() {
+        Collections.sort(songs, Collections.reverseOrder());
+    }
+}
