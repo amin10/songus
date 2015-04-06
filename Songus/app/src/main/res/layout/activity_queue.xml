@@ -1,9 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:layout_height="match_parent"
     tools:context="com.songus.songus.QueueActivity">
 
     <android.support.v7.widget.RecyclerView
@@ -13,11 +10,14 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_above="@+id/queue_qr"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
         android:id="@+id/queue_queue">
 
     </android.support.v7.widget.RecyclerView>
 
     <TextView
+        android:padding="12pt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -35,27 +35,36 @@
         android:id="@+id/queue_title"
         android:layout_below="@+id/queue_event_id"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginBottom="10dp"
+        android:visibility="gone" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Event QR"
+        android:text="EVENT QR"
         android:id="@+id/queue_qr"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:onClick="qr"/>
+        android:onClick="qr"
+        android:paddingLeft="6pt"
+        android:paddingRight="6pt"
+        android:background="?attr/colorAccent"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add song"
+        android:text="ADD SONG"
         android:id="@+id/queue_add"
         android:layout_alignParentBottom="true"
+        android:layout_marginLeft="5px"
+        android:layout_marginRight="5px"
         android:layout_toLeftOf="@+id/queue_end"
         android:layout_toRightOf="@+id/queue_qr"
-        android:onClick="addSong"/>
+        android:onClick="addSong"
+        android:paddingLeft="6pt"
+        android:paddingRight="6pt"
+        android:background="?attr/colorAccent"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -65,7 +74,10 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:onClick="endEvent"/>
+        android:onClick="endEvent"
+        android:paddingLeft="6pt"
+        android:paddingRight="6pt"
+        android:background="?attr/colorAccent"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -76,5 +88,6 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        android:background="?attr/colorAccent"/>
 </RelativeLayout>

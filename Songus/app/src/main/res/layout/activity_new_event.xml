@@ -23,7 +23,8 @@
         android:id="@+id/new_event_from_existing"
         android:layout_below="@+id/title"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp" />
+        android:layout_marginTop="60dp"
+        android:onClick="choosePlaylist"/>
 
     <Button
         android:layout_width="wrap_content"

@@ -1,9 +1,13 @@
 package com.songus.songus;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 
 public class NewEventActivity extends ActionBarActivity {
@@ -36,4 +40,22 @@ public class NewEventActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void choosePlaylist(View v){
+        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+        CharSequence items[] = new CharSequence[] {"Fairuz songs", "Second", "Third"};
+        adb.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface d, int n) {
+                Toast.makeText(getApplicationContext(), n+"", Toast.LENGTH_SHORT).show();
+            }
+
+        });
+        adb.setNegativeButton("Cancel", null);
+        adb.setTitle("Which one?");
+        adb.show();
+    }
+
 }
+

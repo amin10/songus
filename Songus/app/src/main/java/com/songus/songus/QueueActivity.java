@@ -3,9 +3,12 @@ package com.songus.songus;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 
 public class QueueActivity extends ActionBarActivity {
@@ -14,6 +17,10 @@ public class QueueActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(layoutManager);
+//        mRecyclerView.setAdapter(new CustomAdapter());
     }
 
     @Override
@@ -48,6 +55,8 @@ public class QueueActivity extends ActionBarActivity {
     }
 
     public void endEvent(View v){
-
+        Toast.makeText(this, "Event Ended", Toast.LENGTH_LONG);
+        //TODO end the event
+        Intent i = new Intent(this, LoginActivity.class);
     }
 }

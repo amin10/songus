@@ -41,5 +41,6 @@ public class AddSongActivity extends ActionBarActivity {
 
     public void next(View v){
         Intent i = new Intent(this, QueueActivity.class);
+        startActivity(i);
     }
 }

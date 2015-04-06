@@ -16,7 +16,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="33dp" />
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -35,9 +35,9 @@
         android:text="Artist"
         android:id="@+id/textView2"
         android:layout_marginTop="45dp"
-        android:layout_below="@+id/textView6"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/add_song_event" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -107,16 +107,6 @@
         android:layout_alignBottom="@+id/textView5"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Add another Song"
-        android:id="@+id/textView6"
-        android:layout_below="@+id/add_song_event"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp" />
 
     <Button
         android:layout_width="wrap_content"
