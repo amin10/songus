@@ -57,5 +57,6 @@ public class NewEventActivity extends ActionBarActivity {
         adb.show();
     }
 
+
 }
 
