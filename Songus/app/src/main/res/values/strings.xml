@@ -6,4 +6,6 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_add_song">AddSongActivity</string>
+    <string name="title_activity_queue">QueueActivity</string>
 </resources>
