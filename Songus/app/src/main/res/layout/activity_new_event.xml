@@ -28,7 +28,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Playlist"
+        android:text="EMPTY PLAYLIST"
         android:id="@+id/new_event_from_scratch"
         android:layout_below="@+id/new_event_from_existing"
         android:layout_centerHorizontal="true"
