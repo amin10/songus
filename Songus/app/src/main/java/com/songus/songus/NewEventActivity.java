@@ -48,12 +48,12 @@ public class NewEventActivity extends ActionBarActivity {
 
             @Override
             public void onClick(DialogInterface d, int n) {
-                Toast.makeText(getApplicationContext(), n+"", Toast.LENGTH_SHORT).show();
+              Toast.makeText(getApplicationContext(), n+"", Toast.LENGTH_SHORT).show();
             }
 
         });
-        adb.setNegativeButton("Cancel", null);
-        adb.setTitle("Which one?");
+        adb.setPositiveButton("OK", null);
+        adb.setTitle("Choose Spotify Playlist");
         adb.show();
     }
 
