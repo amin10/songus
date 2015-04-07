@@ -124,7 +124,13 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                                     }
 
                                 });
-                                adb.setPositiveButton("OK", null);
+                                adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        Intent i = new Intent(context, QueueActivity.class);
+                                        startActivity(i);
+                                    }
+                                });
                                 adb.setTitle("Choose Spotify Playlist");
                                 adb.show();
                             }
