@@ -124,8 +124,8 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                                     }
 
                                 });
-                                adb.setNegativeButton("Cancel", null);
-                                adb.setTitle("Which one?");
+                                adb.setPositiveButton("OK", null);
+                                adb.setTitle("Choose Spotify Playlist");
                                 adb.show();
                             }
                         });
@@ -136,7 +136,6 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                         Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
                     }
                 });
-
             }
 
             @Override
