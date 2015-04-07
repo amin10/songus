@@ -97,7 +97,6 @@ public class AddSongActivity extends ActionBarActivity {
                              Toast.makeText(getApplicationContext(), "No results", Toast.LENGTH_SHORT).show();
                              return;
                          }
-                         Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
                          AlertDialog.Builder adb = new AlertDialog.Builder(context);
                          final List<Track> tracks = new ArrayList<Track>(tracksPager.tracks.items);
 

@@ -112,8 +112,10 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                 spotify.getPlaylists(user.id, new Callback<Pager<Playlist>>() {
                     @Override
                     public void success(Pager<Playlist> playlistPager, Response response) {
-                        if(playlistPager.total == 0)
-                            Toast.makeText(context, "User has no playlists", Toast.LENGTH_SHORT);
+                        if(playlistPager.total == 0) {
+                            Toast.makeText(context, "No playlists on Spotify", Toast.LENGTH_SHORT);
+                            return;
+                        }
                         final List<Playlist> playlistList = playlistPager.items;
                         List<CharSequence> playlistNames = Lists.transform(playlistList, new Function<Playlist, CharSequence>() {
                             @Override
@@ -135,7 +137,6 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                                     @Override
                                     public void onClick(DialogInterface d, int n) {
                                         choice.set(n);
-                                        Toast.makeText(getApplicationContext(), n + "", Toast.LENGTH_SHORT).show();
                                     }
 
                                 });
@@ -181,7 +182,6 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
 
             @Override
             public void failure(RetrofitError retrofitError) {
-                Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
                 Log.d("SongUs Debug", retrofitError.getResponse().getReason());
             }
         });
@@ -191,7 +191,6 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == Songus.REQUEST_CODE) {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
-            Toast.makeText(this, "Logged in", Toast.LENGTH_LONG).show();
             application.setResponse(response);
             application.setAuthCode(response.getAccessToken());
             SpotifyApi api = new SpotifyApi();
@@ -206,13 +205,11 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
 
     @Override
     public void onLoggedIn() {
-        Toast.makeText(this, "Logged in", Toast.LENGTH_LONG).show();
         Log.d("SongUs Debug", "Logged in");
     }
 
     @Override
     public void onLoggedOut() {
-        Toast.makeText(this, "Logged out", Toast.LENGTH_LONG).show();
         Log.d("SongUs Debug", "Logged out");
     }
 
