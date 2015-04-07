@@ -45,7 +45,8 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
 
     private static final int REQUEST_CODE = 1337;
 
-    private String authCode;
+    private Songus application;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
         builder.setScopes(new String[]{"user-read-private", "playlist-read",
                 "playlist-read-private", "streaming"});
         AuthenticationRequest request = builder.build();
-
+        application = (Songus)getApplication();
         AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
     }
 
@@ -86,11 +87,8 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
     }
 
     public void choosePlaylist(View v){
-        SpotifyApi api = new SpotifyApi();
 
-        api.setAccessToken(authCode);
-
-        final SpotifyService spotify = api.getService();
+        final SpotifyService spotify = application.getSpotifyService();
 
 
         final Context context = this;
@@ -151,7 +149,14 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
         if (requestCode == REQUEST_CODE) {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
             Toast.makeText(this, "Logged in", Toast.LENGTH_LONG).show();
-            authCode = response.getAccessToken();
+            application.setResponse(response);
+            application.setAuthCode(response.getAccessToken());
+            SpotifyApi api = new SpotifyApi();
+
+            api.setAccessToken(application.getAuthCode());
+            application.setSpotifyApi(api);
+            SpotifyService spotify = api.getService();
+            application.setSpotifyService(spotify);
 
         }
     }
