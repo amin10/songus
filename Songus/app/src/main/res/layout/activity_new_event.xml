@@ -37,6 +37,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="63dp"
         android:background="?attr/colorAccent"
-        android:padding="8dp"/>
+        android:padding="8dp"
+        android:nestedScrollingEnabled="false"
+        android:onClick="emptyPlaylist" />
 
 </RelativeLayout>
