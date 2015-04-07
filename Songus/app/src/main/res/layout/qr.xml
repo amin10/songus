@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:orientation="vertical" android:background="?colorPrimary"
+    >
+    <ImageView android:layout_width="wrap_content"
+        android:layout_height="wrap_content" android:src="@drawable/qr" android:id="@+id/qr_img"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5pt"
+        android:background="?colorPrimary"
+        android:id="@+id/qr_ok"
+        android:text="OK"
+        android:layout_below="@id/qr_img"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

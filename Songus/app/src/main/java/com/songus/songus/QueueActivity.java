@@ -1,5 +1,6 @@
 package com.songus.songus;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -59,7 +61,17 @@ public class QueueActivity extends ActionBarActivity {
     }
 
     public void qr(View v){
-
+        //Credit: http://stackoverflow.com/questions/7693633/android-image-dialog-popup
+        final Dialog settingsDialog = new Dialog(this);
+        settingsDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        settingsDialog.setContentView(getLayoutInflater().inflate(R.layout.qr, null));
+        settingsDialog.findViewById(R.id.qr_ok).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                settingsDialog.dismiss();
+            }
+        });
+        settingsDialog.show();
     }
 
     public void endEvent(View v){
