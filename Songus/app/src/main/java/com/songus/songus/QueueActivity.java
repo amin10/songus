@@ -28,7 +28,9 @@ import com.songus.model.SongQueue;
 import com.spotify.sdk.android.player.PlayerNotificationCallback;
 import com.spotify.sdk.android.player.PlayerState;
 
-public class QueueActivity extends ActionBarActivity implements PlayerNotificationCallback{
+public class QueueActivity extends ActionBarActivity{
+
+    private Song currentSong = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,12 +113,22 @@ public class QueueActivity extends ActionBarActivity implements PlayerNotificati
 
     public void next(View v){
         SongQueue songQueue = ((Songus) getApplication()).getSongQueue();
+        if(currentSong!=null){
+            songQueue.removeSong(currentSong.getTrack());
+            RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
+            mRecyclerView.getAdapter().notifyDataSetChanged();
+        }
         if(songQueue.getSongs().size()>0){
             Song song = songQueue.getSong(0);
             ((TextView)findViewById(R.id.playback_song_name)).setText(song.getTrack().name);
             ((TextView)findViewById(R.id.playback_artist_name)).setText(song.getTrack().artists.get(0).name);
-            if(mBound)
+            if(mBound) {
                 mService.play(song.getTrack().uri);
+                currentSong = song;
+            }
+        }else{
+            if(mBound)
+                mService.pause();
         }
     }
 
@@ -142,16 +154,6 @@ public class QueueActivity extends ActionBarActivity implements PlayerNotificati
             mBound = false;
         }
     };
-
-    @Override
-    public void onPlaybackEvent(EventType eventType, PlayerState playerState) {
-
-    }
-
-    @Override
-    public void onPlaybackError(ErrorType errorType, String s) {
-
-    }
 
     public void update(int positionInMs, int durationInMs) {
         int progressSeconds = positionInMs/1000,

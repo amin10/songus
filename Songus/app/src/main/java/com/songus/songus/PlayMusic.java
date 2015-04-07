@@ -50,6 +50,22 @@ public class PlayMusic extends Service implements PlayerNotificationCallback,
         return view;
     }
 
+    public void pause() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    playerReady.acquire();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    return;
+                }
+                playerReady.release();
+                mPlayer.pause();
+            }
+        }).start();
+    }
+
 
     /**
      * Class used for the client Binder.  Because we know this service always
