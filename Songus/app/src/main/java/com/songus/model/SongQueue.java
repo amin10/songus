@@ -1,9 +1,18 @@
 package com.songus.model;
 
+import android.util.Log;
+
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParsePush;
+import com.parse.SendCallback;
 import com.songus.songus.SongQueueEventListener;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -175,6 +184,20 @@ public class SongQueue {
      * Notifies listeners of changes
      */
     private void sendChangeNotification(){
+        // TODO
+        getParseObject().saveInBackground();
+        ParsePush push = new ParsePush();
+        push.setChannel("QueueChanges");
+        push.setMessage("Database updated");
+        push.sendInBackground(new SendCallback() {
+            @Override
+            public void done(ParseException e) {
+                Log.d("SongUs","push sent done");
+                Log.d("SongUs", (e == null) + "");
+            }
+
+
+        });
         for(SongQueueEventListener listener:listeners){
             listener.onSongQueueChange(this);
         }
@@ -185,5 +208,29 @@ public class SongQueue {
      */
     private void reorder() {
         Collections.sort(songs, Collections.reverseOrder());
+    }
+
+    public ParseObject getParseObject(){
+        ParseObject parseObject = new ParseObject("SongQueue");
+        String ids[] = new String[songs.size()];
+        int votes[] = new int[ids.length];
+        for(int i=0; i<songs.size(); i++){
+            ids[i] = songs.get(i).getTrack().id;
+            votes[i] = songs.get(i).getVote();
+        }
+
+        try {
+            parseObject.put("ids", new JSONArray(ids));
+        } catch (JSONException e) {
+            return null;
+        }
+
+        try {
+            parseObject.put("votes", new JSONArray(votes));
+        } catch (JSONException e) {
+            return null;
+        }
+        // TODO
+        return parseObject;
     }
 }

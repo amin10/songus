@@ -13,6 +13,9 @@ import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
+import com.parse.ParseInstallation;
+import com.parse.ParsePush;
+
 public class JoinActivity extends Activity {
 
     @Override
@@ -25,7 +28,6 @@ public class JoinActivity extends Activity {
         title.setTypeface(roboto);
         ((TextView) findViewById(R.id.login_attendee)).setTypeface(roboto_bold);
         ((TextView) findViewById(R.id.login_host)).setTypeface(roboto);
-
     }
 
     public void loginHost(View v){
