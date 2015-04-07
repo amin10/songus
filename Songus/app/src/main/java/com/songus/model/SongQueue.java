@@ -74,7 +74,7 @@ public class SongQueue {
             if(song.getTrack().id.equals(track.id)){
                 song.vote();
                 reorder();
-//                sendChangeNotification(); //TODO
+                sendChangeNotification(); //TODO
                 return true;
             }
         }
@@ -91,7 +91,7 @@ public class SongQueue {
             if(song.getTrack().id.equals(track.id)){
                 song.withdrawVote();
                 reorder();
-//                sendChangeNotification(); //TODO
+                sendChangeNotification(); //TODO
                 return true;
             }
         }
@@ -109,7 +109,7 @@ public class SongQueue {
             if(song.getTrack().id.equals(track.id)){
                 song.setVote(votes);
                 reorder();
-//                sendChangeNotification(); //TODO
+                sendChangeNotification(); //TODO
                 return true;
             }
         }
@@ -129,7 +129,7 @@ public class SongQueue {
         }
         songs.add(song);
         reorder();
-//        sendChangeNotification(); //TODO
+        sendChangeNotification(); //TODO
         return true;
     }
 
@@ -149,7 +149,7 @@ public class SongQueue {
         if(song != null){
             songs.remove(song);
             reorder();
-//            sendChangeNotification(); //TODO
+            sendChangeNotification(); //TODO
             return true;
         }
         return false;
