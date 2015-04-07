@@ -1,12 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.songus.songus.QueueActivity">
+    tools:context="com.songus.songus.QueueActivity"
+    android:background="?colorPrimaryDark">
 
     <android.support.v7.widget.RecyclerView
         android:layout_height="fill_parent"
         android:layout_width="match_parent"
-        android:layout_below="@+id/queue_title"
+        android:layout_below="@+id/queue_header"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_above="@+id/queue_qr"
@@ -16,28 +17,33 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <TextView
-        android:padding="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Event: 45123"
-        android:id="@+id/queue_event_id"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+    <include android:id="@+id/queue_header"
+        layout="@layout/song_queue_headers"></include>
 
-    <TextView
-        android:padding="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Play Queue"
-        android:id="@+id/queue_title"
-        android:layout_below="@+id/queue_event_id"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:visibility="gone" />
+    <!--<TextView-->
+        <!--android:padding="16dp"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAppearance="?android:attr/textAppearanceMedium"-->
+        <!--android:text="Event: 45123"-->
+        <!--android:id="@+id/queue_event_id"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:textColor="#FFFFFF"-->
+        <!--android:visibility="gone"/>-->
+
+    <!--<TextView-->
+        <!--android:padding="16dp"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textAppearance="?android:attr/textAppearanceLarge"-->
+        <!--android:text="Play Queue"-->
+        <!--android:id="@+id/queue_title"-->
+        <!--android:layout_below="@+id/queue_event_id"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginBottom="10dp"-->
+        <!--android:visibility="gone" />-->
 
     <Button
         android:layout_width="wrap_content"
@@ -50,7 +56,7 @@
         android:onClick="qr"
         android:paddingLeft="6pt"
         android:paddingRight="6pt"
-        android:background="?attr/colorAccent"/>
+        android:background="?attr/colorPrimary"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -65,7 +71,7 @@
         android:onClick="addSong"
         android:paddingLeft="6pt"
         android:paddingRight="6pt"
-        android:background="?attr/colorAccent"/>
+        android:background="?attr/colorPrimary"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -78,7 +84,7 @@
         android:onClick="endEvent"
         android:paddingLeft="6pt"
         android:paddingRight="6pt"
-        android:background="?attr/colorAccent"/>
+        android:background="?attr/colorPrimary"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -90,16 +96,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:visibility="invisible"
-        android:background="?attr/colorAccent"/>
+        android:background="?attr/colorPrimary"/>
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New CheckBox"
-        android:id="@+id/checkBox"
-        android:layout_below="@+id/queue_title"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="406dp"
-        android:layout_marginStart="406dp" />
 </RelativeLayout>

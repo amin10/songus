@@ -25,7 +25,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
         android:onClick="choosePlaylist"
-        android:background="?attr/colorAccent"
+        android:background="?attr/colorPrimaryDark"
         android:padding="8dp"/>
 
     <Button
@@ -36,7 +36,7 @@
         android:layout_below="@+id/new_event_from_existing"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="63dp"
-        android:background="?attr/colorAccent"
+        android:background="?attr/colorPrimaryDark"
         android:padding="8dp"
         android:nestedScrollingEnabled="false"
         android:onClick="emptyPlaylist" />

@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="wrap_content" android:padding="5pt" android:layout_marginBottom="5pt">
+    android:layout_height="wrap_content" android:padding="5pt" android:background="?colorPrimary">
     <CheckBox
         android:id="@+id/checkbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4pt"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:checked="false"
+        android:visibility="invisible"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="name"
+        android:text="Title"
         android:id="@+id/name"
         android:layout_centerVertical="true"
         android:maxLines="2"
@@ -24,16 +24,16 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
+        android:text="Votes"
         android:id="@+id/votes"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/checkbox"
-        android:layout_marginLeft="8pt"
+        android:layout_marginLeft="12pt"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="artist"
+        android:text="Artist"
         android:id="@+id/artist"
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/votes"

@@ -1,6 +1,7 @@
 package com.songus.songus;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,8 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
-
 
 public class QueueActivity extends ActionBarActivity {
 
@@ -21,6 +22,13 @@ public class QueueActivity extends ActionBarActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(new SongQueueAdapter(((Songus)getApplication()).getSongQueue()));
+
+        Typeface roboto = ((Songus)getApplication()).roboto;
+        Typeface roboto_bold = ((Songus)getApplication()).roboto_bold;
+        ((Button)findViewById(R.id.queue_add)).setTypeface(roboto_bold);
+        ((Button)findViewById(R.id.queue_end)).setTypeface(roboto);
+        ((Button)findViewById(R.id.queue_qr)).setTypeface(roboto);
+        setTitle("Play Queue - Event #45123");
     }
 
     @Override

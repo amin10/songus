@@ -124,7 +124,7 @@
         android:layout_alignEnd="@+id/add_song_keyword"
         android:onClick="search"
         android:padding="8dp"
-        android:background="?attr/colorAccent"
+        android:background="?attr/colorPrimaryDark"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 </RelativeLayout>

@@ -36,6 +36,9 @@ public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.Song
     @Override
     public void onBindViewHolder(SongHolder holder, int position) {
         String name = this.songList.get(position).getTrack().name;
+//        if(name.length() > 20){
+//            name = name.substring(0, 20);
+//        }
         holder.name.setText(name);
         String artist = this.songList.get(position).getTrack().artists.get(0).name;
         holder.artist.setText(artist);
