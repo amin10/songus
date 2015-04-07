@@ -222,6 +222,13 @@ public class PlayMusic extends Service implements PlayerNotificationCallback,
     public void onPlaybackEvent(EventType eventType, final PlayerState playerState) {
         if(eventType == EventType.PAUSE)
             refreshView.cancel();
+        if(eventType == EventType.TRACK_END)
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    view.next(null);
+                }
+            });
         new Handler(Looper.getMainLooper()).post(new Runnable() {
              @Override
              public void run() {

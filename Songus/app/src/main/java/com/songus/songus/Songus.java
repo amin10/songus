@@ -3,6 +3,7 @@ package com.songus.songus;
 import android.app.Application;
 import android.graphics.Typeface;
 
+import com.parse.Parse;
 import com.songus.model.SongQueue;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
@@ -38,6 +39,9 @@ public class Songus extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Parse.initialize(this, "U4wtb9EosO0IeqGXMKd68QCgDGi68d2AVyg5NsHT", "42SJicw8BkGDB5Bkn0Pof1vWqcyl9bQmT2kqjrJP");
+
         /*
          Initialize here
          */
