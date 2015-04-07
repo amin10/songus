@@ -4,6 +4,8 @@ import android.app.Application;
 import android.graphics.Typeface;
 
 import com.parse.Parse;
+import com.parse.ParseInstallation;
+import com.parse.ParsePush;
 import com.parse.PushService;
 import com.songus.model.SongQueue;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
@@ -45,9 +47,12 @@ public class Songus extends Application {
 
         Parse.initialize(this, "U4wtb9EosO0IeqGXMKd68QCgDGi68d2AVyg5NsHT", "42SJicw8BkGDB5Bkn0Pof1vWqcyl9bQmT2kqjrJP");
 
+        // TODO
         PushService.setDefaultPushCallback(this, JoinActivity.class);
 
+        //ParseInstallation.getCurrentInstallation().saveInBackground();
 
+        ParsePush.subscribeInBackground("QueueChanges");
         /*
          Initialize here
          */

@@ -44,9 +44,12 @@ public class QueueActivity extends ActionBarActivity{
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(new SongQueueAdapter(((Songus)getApplication()).getSongQueue()));
 
+
+        // TODO
+        SongQueue songQueue = ((Songus)getApplication()).getSongQueue();
         /*ParseObject queueParse = new ParseObject("PlayQueue");
-        queueParse.put("songList", ((Songus)getApplication()).getSongQueue());
-        queueParse.saveInBackground();*/
+        queueParse.put("songList", ((Songus)getApplication()).getSongQueue());*/
+        songQueue.getParseObject().saveInBackground();
 
         Typeface roboto = ((Songus)getApplication()).roboto;
         Typeface roboto_bold = ((Songus)getApplication()).roboto_bold;
@@ -121,8 +124,10 @@ public class QueueActivity extends ActionBarActivity{
     public void next(View v){
         SongQueue songQueue = ((Songus) getApplication()).getSongQueue();
         if(v == null){
-            if(justSkipped)
+            if(justSkipped) {
+                justSkipped = false;
                 return;
+            }
         }else{
             justSkipped = true;
         }
