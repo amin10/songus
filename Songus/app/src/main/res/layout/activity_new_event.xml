@@ -19,20 +19,24 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Playlist from Spotify"
+        android:text="Playlist from Spotify"
         android:id="@+id/new_event_from_existing"
         android:layout_below="@+id/title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="60dp"
-        android:onClick="choosePlaylist"/>
+        android:onClick="choosePlaylist"
+        android:background="?attr/colorAccent"
+        android:padding="8dp"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="EMPTY PLAYLIST"
+        android:text="Empty Playlist"
         android:id="@+id/new_event_from_scratch"
         android:layout_below="@+id/new_event_from_existing"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="63dp" />
+        android:layout_marginTop="63dp"
+        android:background="?attr/colorAccent"
+        android:padding="8dp"/>
 
 </RelativeLayout>

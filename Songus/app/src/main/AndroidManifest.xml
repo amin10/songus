@@ -23,7 +23,11 @@
             android:name=".JoinActivity"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize|stateHidden" >
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
 
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
         </activity>
 
         <meta-data
@@ -41,11 +45,6 @@
         <activity
             android:name=".QueueActivity"
             android:label="@string/title_activity_queue" >
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
         </activity>
         <activity android:name="com.spotify.sdk.android.authentication.LoginActivity"></activity>
     </application>

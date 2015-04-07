@@ -1,6 +1,7 @@
 package com.songus.songus;
 
 import android.app.Application;
+import android.graphics.Typeface;
 
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
@@ -12,18 +13,16 @@ import kaaes.spotify.webapi.android.SpotifyService;
  */
 public class Songus extends Application {
 
+    /*
+     Global Fields Here
+     */
     private String authCode;
     private AuthenticationResponse response;
     private SpotifyService spotifyService;
     private SpotifyApi spotifyApi;
 
-    public String getAuthCode() {
-        return authCode;
-    }
-
-    public AuthenticationResponse getResponse() {
-        return response;
-    }
+    public static Typeface roboto;
+    public static Typeface roboto_bold;
 
     @Override
     public void onCreate() {
@@ -31,7 +30,8 @@ public class Songus extends Application {
         /*
          Initialize here
          */
-
+        roboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
+        roboto_bold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
     }
 
     public void setAuthCode(String authCode) {
@@ -57,6 +57,14 @@ public class Songus extends Application {
 
     public SpotifyApi getSpotifyApi() {
         return spotifyApi;
+    }
+
+    public String getAuthCode() {
+        return authCode;
+    }
+
+    public AuthenticationResponse getResponse() {
+        return response;
     }
 
     /*
