@@ -13,6 +13,7 @@ public class Songus extends Application {
      */
     public static Typeface roboto;
     public static Typeface roboto_bold;
+    private static SongQueue songQueue;
 
     @Override
     public void onCreate() {
@@ -22,9 +23,13 @@ public class Songus extends Application {
          */
         roboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         roboto_bold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
+        songQueue = new SongQueue();
     }
 
     /*
      * Global Methods here.
      */
+    public SongQueue getSongQueue(){
+        return songQueue;
+    }
 }
