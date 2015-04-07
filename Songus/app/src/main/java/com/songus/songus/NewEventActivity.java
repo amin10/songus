@@ -2,6 +2,8 @@ package com.songus.songus;
 
 import android.app.AlertDialog;
 import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.google.common.base.Function;
@@ -47,12 +50,7 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
 
     // TODO make sure the user logs in
 
-    private static final String CLIENT_ID = "d840bdd10b4947d49b4186ddac34b0de";
-    private static final String REDIRECT_URI = "http://www.malekbr.com/";
 
-
-
-    private static final int REQUEST_CODE = 1337;
 
     private Songus application;
 
@@ -62,14 +60,14 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_event);
 
-        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(CLIENT_ID,
+        AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(Songus.CLIENT_ID,
                 AuthenticationResponse.Type.TOKEN,
-                REDIRECT_URI);
+                Songus.REDIRECT_URI);
         builder.setScopes(new String[]{"user-read-private", "playlist-read",
                 "playlist-read-private", "streaming"});
         AuthenticationRequest request = builder.build();
         application = (Songus)getApplication();
-        AuthenticationClient.openLoginActivity(this, REQUEST_CODE, request);
+        AuthenticationClient.openLoginActivity(this, Songus.REQUEST_CODE, request);
     }
 
 
@@ -191,7 +189,7 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
 
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == Songus.REQUEST_CODE) {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
             Toast.makeText(this, "Logged in", Toast.LENGTH_LONG).show();
             application.setResponse(response);

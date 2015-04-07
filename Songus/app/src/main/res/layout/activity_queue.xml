@@ -18,7 +18,12 @@
     </android.support.v7.widget.RecyclerView>
 
     <include android:id="@+id/queue_header"
-        layout="@layout/song_queue_headers"></include>
+        layout="@layout/song_queue_headers"
+        android:layout_below="@+id/current_playback"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"></include>
+    <include android:id="@+id/current_playback"
+        layout="@layout/activity_notification_view"></include>
 
     <!--<TextView-->
         <!--android:padding="16dp"-->

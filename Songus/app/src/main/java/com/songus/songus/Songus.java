@@ -3,6 +3,7 @@ package com.songus.songus;
 import android.app.Application;
 import android.graphics.Typeface;
 
+import com.parse.Parse;
 import com.songus.model.SongQueue;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
@@ -17,6 +18,13 @@ public class Songus extends Application {
     /*
      Global Fields Here
      */
+
+    public static final String CLIENT_ID = "d840bdd10b4947d49b4186ddac34b0de";
+    public static final String REDIRECT_URI = "http://www.malekbr.com/";
+
+
+
+    public static final int REQUEST_CODE = 1337;
     private String authCode;
     private AuthenticationResponse response;
     private SpotifyService spotifyService;
@@ -31,6 +39,9 @@ public class Songus extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Parse.initialize(this, "U4wtb9EosO0IeqGXMKd68QCgDGi68d2AVyg5NsHT", "42SJicw8BkGDB5Bkn0Pof1vWqcyl9bQmT2kqjrJP");
+
         /*
          Initialize here
          */

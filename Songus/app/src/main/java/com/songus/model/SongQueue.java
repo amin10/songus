@@ -34,6 +34,7 @@ public class SongQueue {
      * @param defaultPlaylist contains no duplicates in track ids
      */
     public SongQueue(List<Song> defaultPlaylist){
+        this();
         songs = new ArrayList<>(Lists.transform(defaultPlaylist, new Function<Song, Song>() {
             @Override
             public Song apply(Song input) {
