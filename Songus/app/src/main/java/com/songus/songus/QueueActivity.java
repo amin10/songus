@@ -57,7 +57,7 @@ public class QueueActivity extends ActionBarActivity {
     public void endEvent(View v){
         Toast.makeText(this, "Event Ended", Toast.LENGTH_LONG);
         //TODO end the event
-        Intent i = new Intent(this, LoginActivity.class);
+        Intent i = new Intent(this, JoinActivity.class);
         startActivity(i);
     }
 }
