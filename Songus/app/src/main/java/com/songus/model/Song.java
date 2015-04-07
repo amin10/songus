@@ -72,7 +72,7 @@ public class Song  implements Comparable{
     @Override
     public int compareTo(Object another) {
         if(!(another instanceof Song))
-            throw new IllegalArgumentException("Cannot only compare a Song object to a song object.");
+            throw new IllegalArgumentException("Can only compare a Song object to a song object.");
         return this.vote - ((Song)another).vote;
     }
 

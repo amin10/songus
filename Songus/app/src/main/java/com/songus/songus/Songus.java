@@ -36,7 +36,7 @@ public class Songus extends Application {
          */
         roboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         roboto_bold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
-        songQueue = new SongQueue();
+        //songQueue = new SongQueue();
     }
 
     public void setAuthCode(String authCode) {
@@ -77,5 +77,9 @@ public class Songus extends Application {
      */
     public SongQueue getSongQueue(){
         return songQueue;
+    }
+
+    public void setSongQueue(SongQueue songQueue) {
+        Songus.songQueue = songQueue;
     }
 }

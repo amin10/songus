@@ -1,6 +1,7 @@
 package com.songus.songus;
 
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.os.Looper;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+//import android.util.MutableInt;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,18 +18,23 @@ import android.widget.Toast;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.google.common.primitives.Ints;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
+import com.spotify.sdk.android.player.Spotify;
 
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Pager;
 import kaaes.spotify.webapi.android.models.Playlist;
+import kaaes.spotify.webapi.android.models.PlaylistTrack;
+import kaaes.spotify.webapi.android.models.Track;
 import kaaes.spotify.webapi.android.models.User;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -86,6 +93,12 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
         return super.onOptionsItemSelected(item);
     }
 
+
+    public void emptyPlaylist(View v){
+        application.setSongQueue(new SongQueue());
+        Intent i = new Intent(this, QueueActivity.class);
+        startActivity(i);
+    }
     public void choosePlaylist(View v){
 
         final SpotifyService spotify = application.getSpotifyService();
@@ -95,11 +108,13 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
 
         spotify.getMe(new Callback<User>() {
             @Override
-            public void success(User user, Response response) {
+            public void success(final User user, Response response) {
                 spotify.getPlaylists(user.id, new Callback<Pager<Playlist>>() {
                     @Override
                     public void success(Pager<Playlist> playlistPager, Response response) {
-                        List<Playlist> playlistList = playlistPager.items;
+                        if(playlistPager.total == 0)
+                            Toast.makeText(context, "User has no playlists", Toast.LENGTH_SHORT);
+                        final List<Playlist> playlistList = playlistPager.items;
                         List<CharSequence> playlistNames = Lists.transform(playlistList, new Function<Playlist, CharSequence>() {
                             @Override
                             public CharSequence apply(Playlist input) {
@@ -114,10 +129,12 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                             @Override
                             public void run() {
                                 AlertDialog.Builder adb = new AlertDialog.Builder(context);
+                                final AtomicInteger choice = new AtomicInteger(0);
                                 adb.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
 
                                     @Override
                                     public void onClick(DialogInterface d, int n) {
+                                        choice.set(n);
                                         Toast.makeText(getApplicationContext(), n + "", Toast.LENGTH_SHORT).show();
                                     }
 
@@ -125,8 +142,28 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                                 adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        Intent i = new Intent(context, QueueActivity.class);
-                                        startActivity(i);
+                                        spotify.getPlaylistTracks(user.id, playlistList.get(choice.get()).id,
+                                                new Callback<Pager<PlaylistTrack>>() {
+                                                    @Override
+                                                    public void success(Pager<PlaylistTrack> playlistTrackPager, Response response) {
+                                                        List<Song> songList = Lists.transform( playlistTrackPager.items,
+                                                                new Function<PlaylistTrack, Song>() {
+                                                                    @Override
+                                                                    public Song apply(PlaylistTrack input) {
+                                                                        return new Song(input.track);
+                                                                    }
+                                                                });
+                                                        SongQueue queue = new SongQueue(songList);
+                                                        application.setSongQueue(queue);
+                                                        Intent i = new Intent(context, QueueActivity.class);
+                                                        startActivity(i);
+                                                    }
+
+                                                    @Override
+                                                    public void failure(RetrofitError retrofitError) {
+                                                        Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
                                     }
                                 });
                                 adb.setTitle("Choose Spotify Playlist");
@@ -193,5 +230,9 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
     public void onConnectionMessage(String s) {
         Log.d("SongUs Debug", s);
     }
+
+
+
+
 }
 

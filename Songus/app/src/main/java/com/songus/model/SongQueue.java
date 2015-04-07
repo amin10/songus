@@ -2,6 +2,9 @@ package com.songus.model;
 
 import com.songus.songus.SongQueueEventListener;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -21,7 +24,7 @@ public class SongQueue {
     /**
      * Creates an empty song queue
      */
-    public SongQueue(){
+    public SongQueue() {
         songs = new ArrayList<>();
         listeners = new HashSet<>();
     }
@@ -31,10 +34,12 @@ public class SongQueue {
      * @param defaultPlaylist contains no duplicates in track ids
      */
     public SongQueue(List<Song> defaultPlaylist){
-        this();
-        for(Song song:defaultPlaylist){
-            songs.add(song.getCopy());
-        }
+        songs = new ArrayList<>(Lists.transform(defaultPlaylist, new Function<Song, Song>() {
+            @Override
+            public Song apply(Song input) {
+                return input.getCopy();
+            }
+        }));
         reorder();
     }
 
