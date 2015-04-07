@@ -19,6 +19,8 @@ import android.widget.Toast;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Ints;
+import com.songus.model.Song;
+import com.songus.model.SongQueue;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
