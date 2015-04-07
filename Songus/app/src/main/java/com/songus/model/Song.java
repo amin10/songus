@@ -1,6 +1,4 @@
-package com.songus.songus;
-
-import android.util.Log;
+package com.songus.model;
 
 import kaaes.spotify.webapi.android.models.Track;
 

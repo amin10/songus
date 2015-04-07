@@ -20,7 +20,7 @@ public class QueueActivity extends ActionBarActivity {
         RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
-//        mRecyclerView.setAdapter(new CustomAdapter());
+        mRecyclerView.setAdapter(new SongQueueAdapter(((Songus)getApplication()).getSongQueue()));
     }
 
     @Override

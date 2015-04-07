@@ -3,6 +3,7 @@ package com.songus.songus;
 import android.app.Application;
 import android.graphics.Typeface;
 
+import com.songus.model.SongQueue;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
@@ -24,6 +25,8 @@ public class Songus extends Application {
     public static Typeface roboto;
     public static Typeface roboto_bold;
     private static SongQueue songQueue;
+
+    public static final String IS_HOST = "isHost";
 
     @Override
     public void onCreate() {

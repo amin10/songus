@@ -4,6 +4,8 @@ package com.songus.songus;
  * Created by Malek on 4/6/2015.
  */
 
+import com.songus.model.SongQueue;
+
 /**
  * To be implemented by classes that want to listen to changes done on song queues
  */

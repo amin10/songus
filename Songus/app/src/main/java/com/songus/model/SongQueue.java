@@ -1,4 +1,6 @@
-package com.songus.songus;
+package com.songus.model;
+
+import com.songus.songus.SongQueueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +39,6 @@ public class SongQueue {
     }
 
     /**
-     *
      * @return the list of all songs, ordered by votes
      */
     public List<Song> getSongs(){
@@ -47,6 +48,15 @@ public class SongQueue {
         }
         return songsCopy;
     }
+
+    /**
+     * @param index in {0...queue size-1}
+     * @return Song such that there is a one to one mapping of index to songs acoss {0...queue size -1}
+     */
+    public Song getSong(int index){
+        return getSongs().get(index);
+    }
+
 
     /**
      * Votes for the track with the same id in the list

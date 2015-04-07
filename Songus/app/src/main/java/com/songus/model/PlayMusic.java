@@ -1,4 +1,4 @@
-package com.songus.songus;
+package com.songus.model;
 
 import android.app.Service;
 import android.content.Intent;

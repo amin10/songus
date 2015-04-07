@@ -23,6 +23,9 @@ public class AddSongActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_song);
+//        if (getIntent().getExtras().getBoolean(((Songus)getApplication()).IS_HOST)){
+//            findViewById(R.id.add_song_host).setVisibility(View.GONE);
+//        }
     }
 
     @Override
@@ -78,7 +81,7 @@ public class AddSongActivity extends ActionBarActivity {
                 startActivity(i);
             }
         });
-        
+
         adb.setTitle("Results");
         adb.show();
     }
