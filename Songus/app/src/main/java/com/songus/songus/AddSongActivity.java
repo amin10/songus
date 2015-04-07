@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.common.base.Joiner;
+import com.songus.model.Song;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,9 +36,6 @@ public class AddSongActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_song);
-//        if (getIntent().getExtras().getBoolean(((Songus)getApplication()).IS_HOST)){
-//            findViewById(R.id.add_song_host).setVisibility(View.GONE);
-//        }
     }
 
     @Override
@@ -102,12 +100,6 @@ public class AddSongActivity extends ActionBarActivity {
                          Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
                          AlertDialog.Builder adb = new AlertDialog.Builder(context);
                          final List<Track> tracks = new ArrayList<Track>(tracksPager.tracks.items);
-                         /*Track dummy = new Track();
-                         dummy.name = "Dummy Track";
-                         for (int i = 0; i< 20; i++) {
-                             tracks.add(dummy);
-                         }*/
-
 
                          SELECTED_TRACK = tracks.get(0);
 
@@ -125,9 +117,9 @@ public class AddSongActivity extends ActionBarActivity {
                          adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                              @Override
                              public void onClick(DialogInterface dialog, int which) {
-                                 Toast.makeText(getApplicationContext(), SELECTED_TRACK.name, Toast.LENGTH_LONG).show();
+//                               Toast.makeText(getApplicationContext(), SELECTED_TRACK.name, Toast.LENGTH_LONG).show();
+                                 ((Songus) getApplication()).getSongQueue().addSong(new Song(SELECTED_TRACK));
                                  Intent i = new Intent(getApplicationContext(), QueueActivity.class);
-                                 i.putExtra("track", SELECTED_TRACK.id);
                                  startActivity(i);
                              }
                          });
@@ -145,39 +137,5 @@ public class AddSongActivity extends ActionBarActivity {
             }
         });
 
-
-        /*AlertDialog.Builder adb = new AlertDialog.Builder(this);
-        final List<Track> tracks = new ArrayList<Track>(){};
-        Track dummy = new Track();
-        dummy.name = "Dummy Track";
-        for (int i = 0; i< 20; i++) {
-            tracks.add(dummy);
-        }
-
-        SELECTED_TRACK = tracks.get(0);
-
-        CharSequence items[] = new CharSequence[tracks.size()];
-        for (int i = 0; i < tracks.size(); i++){
-            items[i] = tracks.get(i).name;
-        }
-
-        adb.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface d, int n) {
-                SELECTED_TRACK = tracks.get(n);
-            }
-        });
-        adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(getApplicationContext(), SELECTED_TRACK.name, Toast.LENGTH_LONG).show();
-                Intent i = new Intent(getApplicationContext(), QueueActivity.class);
-                i.putExtra("track", SELECTED_TRACK.id);
-                startActivity(i);
-            }
-        });
-
-        adb.setTitle("Results");
-        adb.show();*/
     }
 }
