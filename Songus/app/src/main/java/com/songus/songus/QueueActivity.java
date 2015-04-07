@@ -23,6 +23,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.Parse;
+import com.parse.ParseObject;
 import com.songus.model.Song;
 import com.songus.model.SongQueue;
 import com.spotify.sdk.android.player.PlayerNotificationCallback;
@@ -31,6 +33,7 @@ import com.spotify.sdk.android.player.PlayerState;
 public class QueueActivity extends ActionBarActivity{
 
     private Song currentSong = null;
+    private boolean justSkipped = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,10 @@ public class QueueActivity extends ActionBarActivity{
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(new SongQueueAdapter(((Songus)getApplication()).getSongQueue()));
+
+        /*ParseObject queueParse = new ParseObject("PlayQueue");
+        queueParse.put("songList", ((Songus)getApplication()).getSongQueue());
+        queueParse.saveInBackground();*/
 
         Typeface roboto = ((Songus)getApplication()).roboto;
         Typeface roboto_bold = ((Songus)getApplication()).roboto_bold;
@@ -113,6 +120,12 @@ public class QueueActivity extends ActionBarActivity{
 
     public void next(View v){
         SongQueue songQueue = ((Songus) getApplication()).getSongQueue();
+        if(v == null){
+            if(justSkipped)
+                return;
+        }else{
+            justSkipped = true;
+        }
         if(currentSong!=null){
             songQueue.removeSong(currentSong.getTrack());
             RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
