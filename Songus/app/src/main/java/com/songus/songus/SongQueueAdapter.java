@@ -7,7 +7,10 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.songus.model.Song;
 import com.songus.model.SongQueue;
+
+import java.util.List;
 
 /**
  * Created by amin on 4/6/15.
@@ -15,9 +18,12 @@ import com.songus.model.SongQueue;
 public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.SongHolder> {
 
     private SongQueue queue;
+    private List<Song> songList;
     public SongQueueAdapter(SongQueue queue){
         super();
         this.queue = queue;
+        this.songList = queue.getSongs();
+
     }
     @Override
     public SongHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -29,12 +35,17 @@ public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.Song
 
     @Override
     public void onBindViewHolder(SongHolder holder, int position) {
-
+        String name = this.songList.get(position).getTrack().name;
+        holder.name.setText(name);
+        String artist = this.songList.get(position).getTrack().artists.get(0).name;
+        holder.artist.setText(artist);
+        int votes = this.songList.get(position).getVote();
+        holder.votes.setText(""+votes);
     }
 
     @Override
     public int getItemCount() {
-        return queue.getSongs().size(); //TODO this can be more efficient
+        return this.songList.size();
     }
 
     public class SongHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -56,9 +67,7 @@ public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.Song
         }
 
         @Override
-        public void onClick(View v) {
-            CheckBox voteBox = (CheckBox) v.findViewById(R.id.checkbox);
-            voteBox.toggle();
-        }
+        public void onClick(View v) {}
+
     }
 }
