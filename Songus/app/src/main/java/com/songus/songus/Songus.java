@@ -17,6 +17,13 @@ public class Songus extends Application {
     /*
      Global Fields Here
      */
+
+    public static final String CLIENT_ID = "d840bdd10b4947d49b4186ddac34b0de";
+    public static final String REDIRECT_URI = "http://www.malekbr.com/";
+
+
+
+    public static final int REQUEST_CODE = 1337;
     private String authCode;
     private AuthenticationResponse response;
     private SpotifyService spotifyService;

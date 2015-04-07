@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content" android:padding="5pt" android:background="?colorPrimary">
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:checked="false"
+        android:visibility="invisible"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:id="@+id/playback_song_name"
+        android:maxLines="2"
+        android:maxEms="10"
+        android:layout_alignTop="@+id/checkbox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:textStyle="bold" />
+
+    <ImageButton
+        style="@android:style/MediaButton.Next"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:id="@+id/button"
+        android:layout_alignTop="@+id/playback_song"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:onClick="next"
+        />
+
+    <ImageButton
+        style="@android:style/MediaButton.Play"
+        android:layout_width="wrap_content"
+        android:layout_height="35dp"
+        android:id="@+id/playback_play_pause"
+        android:layout_alignTop="@+id/checkbox"
+        android:layout_toLeftOf="@+id/button"
+        android:layout_toStartOf="@+id/button"
+        android:onClick="play" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0:00/0:00"
+        android:id="@+id/playback_progress"
+        android:maxLines="2"
+        android:maxEms="10"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/playback_play_pause"
+        android:layout_toStartOf="@+id/playback_play_pause" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Artist"
+        android:id="@+id/playback_artist_name"
+        android:maxLines="2"
+        android:maxEms="10"
+        android:layout_alignBottom="@+id/checkbox"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+</RelativeLayout>
