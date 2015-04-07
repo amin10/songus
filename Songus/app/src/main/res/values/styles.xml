@@ -5,7 +5,8 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#8BC34A</item>
         <item name="colorPrimaryDark">#689F38</item>
-        <item name="colorAccent">#CCFF90</item>
+        <item name="colorAccent">#76FF03</item>
     </style>
 
+    <style name="MaterialButton" parent="android:Widget.Holo.Button"></style>
 </resources>
