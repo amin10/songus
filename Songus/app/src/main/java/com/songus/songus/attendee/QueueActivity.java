@@ -35,6 +35,12 @@ public class QueueActivity extends ActionBarActivity{
         setContentView(R.layout.activity_queue);
         findViewById(R.id.current_playback).setVisibility(View.GONE);
         ((Button)findViewById(R.id.queue_end)).setText("LEAVE");
+
+        if(getIntent().getExtras() != null){
+            String qr = getIntent().getExtras().getString("QR");
+            setTitle("Play Queue - Event #" + qr);
+        }
+
         votedIds = new ArrayList<>();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
@@ -50,8 +56,6 @@ public class QueueActivity extends ActionBarActivity{
         ((Button)findViewById(R.id.queue_add)).setTypeface(roboto_bold);
         ((Button)findViewById(R.id.queue_end)).setTypeface(roboto);
         ((Button)findViewById(R.id.queue_qr)).setTypeface(roboto);
-        setTitle("Play Queue - Event #45123");
-
     }
 
 

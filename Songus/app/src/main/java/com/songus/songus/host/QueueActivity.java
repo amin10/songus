@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +40,8 @@ public class QueueActivity extends ActionBarActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
+        setTitle("Play Queue - Event #45123");
+
         votedIds = new ArrayList<>();
 
         mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
@@ -58,7 +61,6 @@ public class QueueActivity extends ActionBarActivity{
         ((Button)findViewById(R.id.queue_add)).setTypeface(roboto_bold);
         ((Button)findViewById(R.id.queue_end)).setTypeface(roboto);
         ((Button)findViewById(R.id.queue_qr)).setTypeface(roboto);
-        setTitle("Play Queue - Event #45123");
     }
 
 
