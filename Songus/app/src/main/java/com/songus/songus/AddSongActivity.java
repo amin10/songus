@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import com.google.common.base.Joiner;
 import com.songus.model.Song;
+import com.songus.songus.R;
+import com.songus.songus.Songus;
+import com.songus.songus.host.QueueActivity;
 
 import java.util.ArrayList;
 import java.util.List;

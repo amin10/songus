@@ -1,20 +1,14 @@
 package com.songus.songus;
 
 import android.app.Activity;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
 import android.view.View;
-import android.widget.RemoteViews;
 import android.widget.TextView;
 
-import com.parse.ParseInstallation;
-import com.parse.ParsePush;
+import com.songus.songus.attendee.QueueActivity;
+import com.songus.songus.host.NewEventActivity;
 
 public class JoinActivity extends Activity {
 
@@ -36,7 +30,8 @@ public class JoinActivity extends Activity {
     }
 
     public void loginAttendee(View v){
-
+        Intent i = new Intent(this, QueueActivity.class);
+        startActivity(i);
     }
 }
 

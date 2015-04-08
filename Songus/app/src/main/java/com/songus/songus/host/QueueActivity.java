@@ -1,40 +1,33 @@
-package com.songus.songus;
+package com.songus.songus.host;
 
 import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.test.UiThreadTest;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
-
-import com.parse.Parse;
-import com.parse.ParseObject;
 import com.songus.model.Song;
 import com.songus.model.SongQueue;
-import com.spotify.sdk.android.player.PlayerNotificationCallback;
-import com.spotify.sdk.android.player.PlayerState;
+import com.songus.songus.AddSongActivity;
+import com.songus.songus.JoinActivity;
+import com.songus.songus.R;
+import com.songus.songus.SongQueueAdapter;
+import com.songus.songus.Songus;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class QueueActivity extends ActionBarActivity{
 

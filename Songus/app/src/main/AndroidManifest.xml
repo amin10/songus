@@ -44,7 +44,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".NewEventActivity"
+            android:name=".host.NewEventActivity"
             android:label="@string/title_activity_new_event" >
         </activity>
         <activity
@@ -52,12 +52,17 @@
             android:label="@string/title_activity_add_song" >
         </activity>
         <activity
-            android:name=".QueueActivity"
+            android:name=".host.QueueActivity"
+            android:label="@string/title_activity_queue"
+            >
+        </activity>
+        <activity
+            android:name=".attendee.QueueActivity"
             android:label="@string/title_activity_queue"
             >
         </activity>
         <activity android:name="com.spotify.sdk.android.authentication.LoginActivity" />
-        <service android:name=".PlayMusic"
+        <service android:name=".host.PlayMusic"
             android:exported="false"/>
 
         <service android:name="com.parse.PushService" />

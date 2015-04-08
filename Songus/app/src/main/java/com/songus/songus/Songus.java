@@ -5,7 +5,6 @@ import android.graphics.Typeface;
 import android.os.StrictMode;
 
 import com.parse.Parse;
-import com.parse.ParseInstallation;
 import com.parse.ParsePush;
 import com.parse.PushService;
 import com.songus.model.SongQueue;
