@@ -24,6 +24,7 @@
         android:layout_alignParentStart="true"
         android:textStyle="bold" />
 
+
     <ImageButton
         style="@android:style/MediaButton.Next"
         android:layout_width="wrap_content"
@@ -34,16 +35,30 @@
         android:layout_alignParentEnd="true"
         android:onClick="next"
         />
-
-    <ImageButton
-        style="@android:style/MediaButton.Play"
-        android:layout_width="wrap_content"
-        android:layout_height="35dp"
+    <ViewFlipper
         android:id="@+id/playback_play_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignTop="@+id/checkbox"
         android:layout_toLeftOf="@+id/button"
         android:layout_toStartOf="@+id/button"
-        android:onClick="play" />
+        >
+        <ImageButton
+            style="@android:style/MediaButton.Play"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:onClick="play"
+
+            />
+        <ImageButton
+            style="@android:style/MediaButton.Pause"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:onClick="play"
+
+            />
+        </ViewFlipper>
+
 
     <TextView
         android:layout_width="wrap_content"

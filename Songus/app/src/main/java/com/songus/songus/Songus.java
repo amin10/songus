@@ -2,6 +2,7 @@ package com.songus.songus;
 
 import android.app.Application;
 import android.graphics.Typeface;
+import android.os.StrictMode;
 
 import com.parse.Parse;
 import com.parse.ParseInstallation;
@@ -42,6 +43,8 @@ public class Songus extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
 
         Parse.enableLocalDatastore(this);
 

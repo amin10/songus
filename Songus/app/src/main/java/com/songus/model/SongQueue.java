@@ -125,6 +125,15 @@ public class SongQueue {
         return false;
     }
 
+    public int getVote(Track track){
+        for(Song song:songs){
+            if(song.getTrack().id.equals(track.id)){
+                return song.getVote();
+            }
+        }
+        return 0;
+    }
+
     /**
      * Adds a song to the queue if it doesn't exist and is not blocked
      * @param song song to be added

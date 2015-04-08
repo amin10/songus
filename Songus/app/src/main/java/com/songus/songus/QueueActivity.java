@@ -14,6 +14,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.test.UiThreadTest;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +24,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
 import com.parse.Parse;
 import com.parse.ParseObject;
@@ -30,19 +33,25 @@ import com.songus.model.SongQueue;
 import com.spotify.sdk.android.player.PlayerNotificationCallback;
 import com.spotify.sdk.android.player.PlayerState;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class QueueActivity extends ActionBarActivity{
 
     private Song currentSong = null;
     private boolean justSkipped = false;
-
+    private ArrayList<String> votedIds;
+    private RecyclerView mRecyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
+        votedIds = new ArrayList<>();
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setAdapter(new SongQueueAdapter(((Songus)getApplication()).getSongQueue()));
+        mRecyclerView.setAdapter(new SongQueueAdapter(((Songus)getApplication()).getSongQueue(), votedIds));
 
 
         // TODO
@@ -57,16 +66,8 @@ public class QueueActivity extends ActionBarActivity{
         ((Button)findViewById(R.id.queue_end)).setTypeface(roboto);
         ((Button)findViewById(R.id.queue_qr)).setTypeface(roboto);
         setTitle("Play Queue - Event #45123");
-
-
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Intent intent = new Intent(this, PlayMusic.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -117,12 +118,20 @@ public class QueueActivity extends ActionBarActivity{
     }
 
     public void play(View v){
-        if(mBound)
+        if(currentSong == null) {
+            next(v);
+            ((ViewFlipper)findViewById(R.id.playback_play_pause)).showNext();
+        }else
+        if(mBound) {
             mService.play();
+            ((ViewFlipper)findViewById(R.id.playback_play_pause)).showNext();
+
+        }
     }
 
     public void next(View v){
         SongQueue songQueue = ((Songus) getApplication()).getSongQueue();
+
         if(v == null){
             if(justSkipped) {
                 justSkipped = false;
@@ -145,9 +154,14 @@ public class QueueActivity extends ActionBarActivity{
                 currentSong = song;
             }
         }else{
-            if(mBound)
+            if(mBound) {
                 mService.pause();
+            }
         }
+        mRecyclerView.setAdapter(new SongQueueAdapter(((Songus)getApplication()).getSongQueue(), votedIds));
+        mRecyclerView.getAdapter().notifyDataSetChanged();
+
+        mRecyclerView.invalidate();
     }
 
 
@@ -177,7 +191,15 @@ public class QueueActivity extends ActionBarActivity{
         int progressSeconds = positionInMs/1000,
                 durationSeconds = durationInMs/1000;
         ((TextView)findViewById(R.id.playback_progress))
-                .setText(progressSeconds/60+":"+progressSeconds%60+"/"+
-                        durationSeconds/60+":"+durationSeconds%60);
+                .setText(progressSeconds / 60 + ":" + progressSeconds % 60 + "/" +
+                        durationSeconds / 60 + ":" + durationSeconds % 60);
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, PlayMusic.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
 }
