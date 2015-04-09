@@ -6,7 +6,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.SendCallback;
-import com.songus.songus.SongQueueEventListener;
+import com.songus.SongQueueEventListener;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
