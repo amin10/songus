@@ -1,2 +1,1 @@
-include ':app', ':six'
-include ':androidQuickResponseCode'
+include ':app'
