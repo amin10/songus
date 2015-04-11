@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/Songus.iml" filepath="$PROJECT_DIR$/Songus.iml" />
       <module fileurl="file://$PROJECT_DIR$/androidQuickResponseCode/androidQuickResponseCode.iml" filepath="$PROJECT_DIR$/androidQuickResponseCode/androidQuickResponseCode.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/six/six.iml" filepath="$PROJECT_DIR$/six/six.iml" />
     </modules>
   </component>
 </project>
