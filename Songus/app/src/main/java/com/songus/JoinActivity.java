@@ -65,12 +65,11 @@ public class JoinActivity extends Activity {
             if (resultCode == RESULT_OK) {
                 eventCode = data.getStringExtra("SCAN_RESULT");
                 if(songus.isValidEventCode(eventCode)) {
-                    //Get Spotify
+                    //Get Spotify -- Attendee. No Premium required.
                     AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(Songus.CLIENT_ID,
                             AuthenticationResponse.Type.TOKEN,
                             Songus.REDIRECT_URI);
-                    builder.setScopes(new String[]{"user-read-private", "playlist-read",
-                            "playlist-read-private"});
+                    builder.setScopes(new String[]{/*No permissions = no premium account needed */});
                     AuthenticationRequest request = builder.build();
                     songus = (Songus)getApplication();
                     AuthenticationClient.openLoginActivity(this, Songus.REQUEST_CODE, request);
