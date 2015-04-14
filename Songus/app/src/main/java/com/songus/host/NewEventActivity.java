@@ -53,6 +53,7 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_event);
 
+        //Get Spotify
         AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(Songus.CLIENT_ID,
                 AuthenticationResponse.Type.TOKEN,
                 Songus.REDIRECT_URI);
@@ -199,16 +200,15 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == Songus.REQUEST_CODE) {
+            //Get Spotify
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
             songus.setResponse(response);
             songus.setAuthCode(response.getAccessToken());
             SpotifyApi api = new SpotifyApi();
-
             api.setAccessToken(songus.getAuthCode());
             songus.setSpotifyApi(api);
             SpotifyService spotify = api.getService();
             songus.setSpotifyService(spotify);
-
         }
     }
 

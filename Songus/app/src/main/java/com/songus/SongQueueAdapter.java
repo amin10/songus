@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Track;
 import retrofit.Callback;
 import retrofit.RetrofitError;
@@ -55,6 +56,7 @@ public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.Song
     public void onBindViewHolder(final SongHolder holder,final int position) {
         final AtomicReference<Track> t = new AtomicReference<Track>();//TODO
         t.set(null);
+        SpotifyService service = songus.getSpotifyService();
         songus.getSpotifyService().getTrack(this.songList.get(position).getTrack(), new Callback<Track>() {
             @Override
             public void success(Track track, Response response) {

@@ -11,10 +11,17 @@ import android.widget.Toast;
 
 import com.songus.songus.R;
 import com.songus.host.NewEventActivity;
+import com.spotify.sdk.android.authentication.AuthenticationClient;
+import com.spotify.sdk.android.authentication.AuthenticationRequest;
+import com.spotify.sdk.android.authentication.AuthenticationResponse;
+
+import kaaes.spotify.webapi.android.SpotifyApi;
+import kaaes.spotify.webapi.android.SpotifyService;
 
 public class JoinActivity extends Activity {
 
     private Songus songus;
+    private String eventCode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,11 +63,18 @@ public class JoinActivity extends Activity {
         if (requestCode == 0) {
 
             if (resultCode == RESULT_OK) {
-                String eventCode = data.getStringExtra("SCAN_RESULT");
+                eventCode = data.getStringExtra("SCAN_RESULT");
                 if(songus.isValidEventCode(eventCode)) {
-                    Intent i = new Intent(this, com.songus.host.QueueActivity.class); //TODO attendee
-                    i.putExtra("QR", eventCode);
-                    startActivity(i);
+                    //Get Spotify
+                    AuthenticationRequest.Builder builder = new AuthenticationRequest.Builder(Songus.CLIENT_ID,
+                            AuthenticationResponse.Type.TOKEN,
+                            Songus.REDIRECT_URI);
+                    builder.setScopes(new String[]{"user-read-private", "playlist-read",
+                            "playlist-read-private"});
+                    AuthenticationRequest request = builder.build();
+                    songus = (Songus)getApplication();
+                    AuthenticationClient.openLoginActivity(this, Songus.REQUEST_CODE, request);
+
                 }else{
                     Toast.makeText(this, "Invalid Event Code", Toast.LENGTH_LONG).show();
                 }
@@ -69,7 +83,24 @@ public class JoinActivity extends Activity {
                 //handle cancel
             }
         }
+        if(requestCode == Songus.REQUEST_CODE){
+            //Get Spotify
+            AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, data);
+            songus.setResponse(response);
+            songus.setAuthCode(response.getAccessToken());
+            SpotifyApi api = new SpotifyApi();
+            api.setAccessToken(songus.getAuthCode());
+            songus.setSpotifyApi(api);
+            SpotifyService spotify = api.getService();
+            songus.setSpotifyService(spotify);
+
+            Intent i = new Intent(this, com.songus.attendee.QueueActivity.class);
+            i.putExtra("QR", eventCode);
+            startActivity(i);
+        }
     }
+
+
 }
 
 

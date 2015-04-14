@@ -11,6 +11,7 @@ import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.PushService;
 import com.parse.SaveCallback;
@@ -62,6 +63,7 @@ public class Songus extends Application {
         ParseUser.enableAutomaticUser();
         ParseACL defaultACL = new ParseACL();
         defaultACL.setPublicWriteAccess(true);
+        defaultACL.setPublicReadAccess(true);
         ParseACL.setDefaultACL(defaultACL, true);
 
         Parse.initialize(this, "U4wtb9EosO0IeqGXMKd68QCgDGi68d2AVyg5NsHT", "42SJicw8BkGDB5Bkn0Pof1vWqcyl9bQmT2kqjrJP");
@@ -70,10 +72,6 @@ public class Songus extends Application {
          */
         roboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         roboto_bold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
-//
-//        final Song s0 = new Song("5hLWYByffbfma2aXQYEPt0");
-//        Song s1 = new Song("1XsMJrKPpAm2CvknApqz1H");
-
 
     }
 
