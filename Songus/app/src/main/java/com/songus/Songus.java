@@ -3,15 +3,27 @@ package com.songus;
 import android.app.Application;
 import android.graphics.Typeface;
 import android.os.StrictMode;
+import android.util.Log;
 
 import com.parse.Parse;
+import com.parse.ParseACL;
+import com.parse.ParseException;
+import com.parse.ParseInstallation;
+import com.parse.ParseObject;
 import com.parse.ParsePush;
+import com.parse.ParseUser;
 import com.parse.PushService;
+import com.parse.SaveCallback;
+import com.songus.model.Song;
 import com.songus.model.SongQueue;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
+import kaaes.spotify.webapi.android.models.Track;
 
 /**
  * Created by amin on 4/6/15.
@@ -35,7 +47,7 @@ public class Songus extends Application {
 
     public static Typeface roboto;
     public static Typeface roboto_bold;
-    private static SongQueue songQueue;
+//    private static SongQueue songQueue;
 
     public static final String IS_HOST = "isHost";
 
@@ -45,22 +57,24 @@ public class Songus extends Application {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        Parse.enableLocalDatastore(this);
+        ParseObject.registerSubclass(Song.class);
+        ParseObject.registerSubclass(SongQueue.class);
+        ParseUser.enableAutomaticUser();
+        ParseACL defaultACL = new ParseACL();
+        defaultACL.setPublicWriteAccess(true);
+        ParseACL.setDefaultACL(defaultACL, true);
 
         Parse.initialize(this, "U4wtb9EosO0IeqGXMKd68QCgDGi68d2AVyg5NsHT", "42SJicw8BkGDB5Bkn0Pof1vWqcyl9bQmT2kqjrJP");
-
-        // TODO
-        PushService.setDefaultPushCallback(this, JoinActivity.class);
-
-        //ParseInstallation.getCurrentInstallation().saveInBackground();
-
-        ParsePush.subscribeInBackground("QueueChanges");
         /*
          Initialize here
          */
         roboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         roboto_bold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
-        //songQueue = new SongQueue();
+//
+//        final Song s0 = new Song("5hLWYByffbfma2aXQYEPt0");
+//        Song s1 = new Song("1XsMJrKPpAm2CvknApqz1H");
+
+
     }
 
     public void setAuthCode(String authCode) {
@@ -95,19 +109,23 @@ public class Songus extends Application {
     public AuthenticationResponse getResponse() {
         return response;
     }
-
-    /*
-     * Global Methods here.
-     */
-    public SongQueue getSongQueue(){
-        return songQueue;
-    }
-
-    public void setSongQueue(SongQueue songQueue) {
-        Songus.songQueue = songQueue;
-    }
+//
+//    /*
+//     * Global Methods here.
+//     */
+//    public SongQueue getSongQueue(){
+//        return songQueue;
+//    }
+//
+//    public void setSongQueue(SongQueue songQueue) {
+//        Songus.songQueue = songQueue;
+//    }
 
     public boolean isValidEventCode(String code){
         return true; //TODO
+    }
+
+    public Track getTrackById(String id){
+        return spotifyService.getTrack(id);
     }
 }

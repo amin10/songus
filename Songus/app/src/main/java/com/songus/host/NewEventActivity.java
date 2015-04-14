@@ -9,7 +9,6 @@ import android.os.Looper;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
-//import android.util.MutableInt;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +16,9 @@ import android.widget.Toast;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.SaveCallback;
 import com.songus.model.Song;
 import com.songus.model.SongQueue;
 import com.songus.songus.R;
@@ -43,11 +45,7 @@ import retrofit.client.Response;
 
 public class NewEventActivity extends ActionBarActivity implements ConnectionStateCallback {
 
-    // TODO make sure the user logs in
-
-
-
-    private Songus application;
+    private Songus songus;
 
 
     @Override
@@ -61,7 +59,7 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
         builder.setScopes(new String[]{"user-read-private", "playlist-read",
                 "playlist-read-private", "streaming"});
         AuthenticationRequest request = builder.build();
-        application = (Songus)getApplication();
+        songus = (Songus)getApplication();
         AuthenticationClient.openLoginActivity(this, Songus.REQUEST_CODE, request);
     }
 
@@ -90,14 +88,25 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
 
 
     public void emptyPlaylist(View v){
-        application.setSongQueue(new SongQueue());
-        Intent i = new Intent(this, QueueActivity.class);
-        startActivity(i);
+        final SongQueue empty = new SongQueue();
+        empty.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                final SongQueue q = new SongQueue();
+                q.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        Intent i = new Intent(getApplicationContext(), QueueActivity.class);
+                        i.putExtra("QR", q.getObjectId());
+                        startActivity(i);
+                    }
+                });
+            }
+        });
     }
     public void choosePlaylist(View v){
 
-        final SpotifyService spotify = application.getSpotifyService();
-
+        final SpotifyService spotify = songus.getSpotifyService();
 
         final Context context = this;
 
@@ -106,7 +115,7 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
             public void success(final User user, Response response) {
                 spotify.getPlaylists(user.id, new Callback<Pager<Playlist>>() {
                     @Override
-                    public void success(Pager<Playlist> playlistPager, Response response) {
+                    public void success(final Pager<Playlist> playlistPager, Response response) {
                         if(playlistPager.total == 0) {
                             Toast.makeText(context, "No playlists on Spotify", Toast.LENGTH_SHORT);
                             return;
@@ -125,43 +134,48 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
-                                AlertDialog.Builder adb = new AlertDialog.Builder(context);
-                                final AtomicInteger choice = new AtomicInteger(0);
-                                adb.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+                            AlertDialog.Builder adb = new AlertDialog.Builder(context);
+                            final AtomicInteger choice = new AtomicInteger(0);
+                            adb.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
 
-                                    @Override
-                                    public void onClick(DialogInterface d, int n) {
-                                        choice.set(n);
-                                    }
+                                @Override
+                                public void onClick(DialogInterface d, int n) {
+                                    choice.set(n);
+                                }
 
-                                });
-                                adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        spotify.getPlaylistTracks(user.id, playlistList.get(choice.get()).id,
-                                                new Callback<Pager<PlaylistTrack>>() {
-                                                    @Override
-                                                    public void success(Pager<PlaylistTrack> playlistTrackPager, Response response) {
-                                                        List<Song> songList = Lists.transform( playlistTrackPager.items,
-                                                                new Function<PlaylistTrack, Song>() {
-                                                                    @Override
-                                                                    public Song apply(PlaylistTrack input) {
-                                                                        return new Song(input.track);
-                                                                    }
-                                                                });
-                                                        SongQueue queue = new SongQueue(songList);
-                                                        application.setSongQueue(queue);
-                                                        Intent i = new Intent(context, QueueActivity.class);
-                                                        startActivity(i);
-                                                    }
+                            });
+                            adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                spotify.getPlaylistTracks(user.id, playlistList.get(choice.get()).id,
+                                    new Callback<Pager<PlaylistTrack>>() {
+                                        @Override
+                                        public void success(Pager<PlaylistTrack> playlistTrackPager, Response response) {
+                                            final SongQueue q = new SongQueue();
+                                            for(PlaylistTrack p : playlistTrackPager.items){
+                                                Song s = new Song(p.track);
+                                                try{
+                                                    s.save();
+                                                    q.addSong(s);
+                                                }catch(ParseException e){}
+                                            }
+                                            q.saveInBackground(new SaveCallback() {
+                                                @Override
+                                                public void done(ParseException e) {
+                                                Intent i = new Intent(getApplicationContext(), QueueActivity.class);
+                                                i.putExtra("QR", q.getObjectId());
+                                                startActivity(i);
+                                                }
+                                            });
+                                        }
 
-                                                    @Override
-                                                    public void failure(RetrofitError retrofitError) {
-                                                        Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                });
-                                    }
-                                });
+                                        @Override
+                                        public void failure(RetrofitError retrofitError) {
+                                            Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
+                            });
                                 adb.setTitle("Choose Spotify Playlist");
                                 adb.show();
                             }
@@ -186,14 +200,14 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == Songus.REQUEST_CODE) {
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
-            application.setResponse(response);
-            application.setAuthCode(response.getAccessToken());
+            songus.setResponse(response);
+            songus.setAuthCode(response.getAccessToken());
             SpotifyApi api = new SpotifyApi();
 
-            api.setAccessToken(application.getAuthCode());
-            application.setSpotifyApi(api);
+            api.setAccessToken(songus.getAuthCode());
+            songus.setSpotifyApi(api);
             SpotifyService spotify = api.getService();
-            application.setSpotifyService(spotify);
+            songus.setSpotifyService(spotify);
 
         }
     }

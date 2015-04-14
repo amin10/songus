@@ -1,5 +1,9 @@
 package com.songus.model;
 
+import com.parse.ParseClassName;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+
 import kaaes.spotify.webapi.android.models.Track;
 
 /**
@@ -8,39 +12,48 @@ import kaaes.spotify.webapi.android.models.Track;
  * Represents a song with the vote for the song.
  */
 
-public class Song  implements Comparable{
-    final private Track track;
-    private int vote;
+@ParseClassName("Song")
+public class Song extends ParseObject implements Comparable{
+    public final static String VOTES = "votes", TRACK_ID = "track_id";
 
+
+    public Song(){
+
+    }
+
+    public Song(String track){
+        put(VOTES, 0);
+        put(TRACK_ID, track);
+    }
     /***
      * Makes a Song object with 0 votes
      * @param track the track representing this song
      */
     public Song(Track track){
-        this.track = track;
-        vote = 0;
+        put(VOTES, 0);
+        put(TRACK_ID, track.id);
     }
+
 
     /**
      * Increases the vote count by 1
      */
     public void vote(){
-        vote++;
+        put(VOTES, getVote()+1);
     }
 
     /**
      * Decreases the vote count by 1
      */
     public void withdrawVote(){
-        vote--;
+        put(VOTES, getVote() - 1);
     }
 
     /**
-     *
      * @return the vote count for this song
      */
     public int getVote(){
-        return vote;
+        return getInt(VOTES);
     }
 
     /**
@@ -48,32 +61,22 @@ public class Song  implements Comparable{
      * @param vote the new vote count
      */
     public void setVote(int vote){
-        this.vote = vote;
+        put(VOTES, vote);
     }
 
     /**
      *
      * @return the corresponding track
      */
-    public Track getTrack() {
-        return track;
-    }
-
-    /**
-     *
-     * @return An exact copy of this object (for defensive copying).==
-     */
-    public Song getCopy(){
-        Song copy = new Song(track);
-        copy.setVote(vote);
-        return copy;
+    public String getTrack() {
+        return getString(TRACK_ID);
     }
 
     @Override
     public int compareTo(Object another) {
         if(!(another instanceof Song))
             throw new IllegalArgumentException("Can only compare a Song object to a song object.");
-        return this.vote - ((Song)another).vote;
+        return this.getVote() - ((Song)another).getVote();
     }
 
     @Override
@@ -83,16 +86,16 @@ public class Song  implements Comparable{
 
         Song song = (Song) o;
 
-        if (vote != song.vote) return false;
-        if (!track.equals(song.track)) return false;
+        if (getVote() != song.getVote()) return false;
+        if (!getTrack().equals(song.getTrack())) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = track.hashCode();
-        result = 31 * result + (int) (vote ^ (vote >>> 32));
+        int result = getTrack().hashCode();
+        result = 31 * result + (int) (getVote() ^ (getVote() >>> 32));
         return result;
     }
 
@@ -102,6 +105,6 @@ public class Song  implements Comparable{
      * @return true iff the two tracks have the same id
      */
     public boolean sameSong(Song another){
-        return another.track.id == track.id;
+        return another.getTrack().equals(getTrack());
     }
 }

@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.songus.songus.R;
-import com.songus.attendee.QueueActivity;
 import com.songus.host.NewEventActivity;
 
 public class JoinActivity extends Activity {
@@ -39,8 +38,7 @@ public class JoinActivity extends Activity {
         try {
 
             Intent intent = new Intent("com.google.zxing.client.android.SCAN");
-            intent.putExtra("SCAN_MODE", "QR_CODE_MODE"); // "PRODUCT_MODE for bar codes
-
+            intent.putExtra("SCAN_MODE", "QR_CODE_MODE");
             startActivityForResult(intent, 0);
 
         } catch (Exception e) {
@@ -60,7 +58,7 @@ public class JoinActivity extends Activity {
             if (resultCode == RESULT_OK) {
                 String eventCode = data.getStringExtra("SCAN_RESULT");
                 if(songus.isValidEventCode(eventCode)) {
-                    Intent i = new Intent(this, QueueActivity.class);
+                    Intent i = new Intent(this, com.songus.host.QueueActivity.class); //TODO attendee
                     i.putExtra("QR", eventCode);
                     startActivity(i);
                 }else{

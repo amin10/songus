@@ -7,48 +7,83 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.google.common.base.Optional;
+import com.google.common.util.concurrent.Atomics;
+import com.parse.CountCallback;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.songus.Songus;
 import com.songus.model.Song;
 import com.songus.model.SongQueue;
 import com.songus.songus.R;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+import kaaes.spotify.webapi.android.models.Track;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by amin on 4/6/15.
  */
 public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.SongHolder> {
 
-    private SongQueue queue;
+    private String qr;
     private List<Song> songList;
     private List<String> votedIds;
-    public SongQueueAdapter(SongQueue queue, List<String> votedIds){
-        super();
-        this.queue = queue;
-        this.songList = queue.getSongs();
-        this.votedIds = votedIds;
+    private Songus songus;
+
+    public SongQueueAdapter(List<Song> songList, String qr, Songus songus){
+        this.songus = songus;
+        this.songList = songList;
+        this.votedIds = new ArrayList<>();
     }
+
     @Override
     public SongHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.song_queue_row, parent, false);
-        SongHolder vh = new SongHolder(v, this);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.song_queue_row, parent, false);
+        SongHolder vh = new SongHolder(v);
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(SongHolder holder, int position) {
-        String name = this.songList.get(position).getTrack().name;
+    public void onBindViewHolder(final SongHolder holder,final int position) {
+        final AtomicReference<Track> t = new AtomicReference<Track>();//TODO
+        t.set(null);
+        songus.getSpotifyService().getTrack(this.songList.get(position).getTrack(), new Callback<Track>() {
+            @Override
+            public void success(Track track, Response response) {
+                t.set(track);
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                error.printStackTrace();
+            }
+        });
+        while(t.get() == null){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         holder.position = position;
-        holder.name.setText(name);
-        String artist = this.songList.get(position).getTrack().artists.get(0).name;
-        holder.artist.setText(artist);
-        int votes = this.songList.get(position).getVote();
-        holder.votes.setText(""+votes);
+        holder.name.setText(t.get().name);
+        holder.artist.setText(t.get().artists.get(0).name);
+        int votes = songList.get(position).getVote();
+        holder.votes.setText("" + votes);
+
     }
 
     @Override
     public int getItemCount() {
-        return this.songList.size();
+         return songList.size();
     }
 
     public class SongHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -56,40 +91,27 @@ public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.Song
         public CheckBox voteBox;
         public int position;
 
-        private SongQueueAdapter mAdapter;
 
-        public SongHolder(View itemView, SongQueueAdapter adapter) {
+        public SongHolder(View itemView) {
             super(itemView);
             itemView.findViewById(R.id.checkbox).setOnClickListener(this);
-//            itemView.setOnClickListener(this);
-
-            mAdapter = adapter;
-
             artist = (TextView) itemView.findViewById(R.id.artist);
             name = (TextView) itemView.findViewById(R.id.name);
             votes = (TextView) itemView.findViewById(R.id.votes);
             voteBox = (CheckBox) itemView.findViewById(R.id.checkbox);
-            if(votedIds.contains(songList.get(position).getTrack().id)){
-                voteBox.setChecked(true);
-            }
+//            if(votedIds.contains(songList.get(position).getTrack())){
+//                voteBox.setChecked(true);
+//            }
         }
 
         @Override
         public void onClick(View v) {
-//           int score = Integer.parseInt(votes.getText().toString())-1;
-            queue.vote(songList.get(position).getTrack());
-            votedIds.add(songList.get(position).getTrack().id);
-            voteBox.setChecked(false);
-            votes.setText(queue.getVote(songList.get(position).getTrack())+"");
-//           if(voteBox.isChecked()){
-//               score = Integer.parseInt(votes.getText().toString())+1;
-//               queue.vote(songList.get(position).getTrack());
-//               votedIds.add(songList.get(position).getTrack().id);
-//           }else{
-//               queue.withdrawVote(songList.get(position).getTrack());
-//               votedIds.remove(songList.get(position).getTrack().id);
-//           }
-           votes.setText(queue.getVote(songList.get(position).getTrack())+"");
+//            int score = Integer.parseInt(votes.getText().toString())-1;
+//            queue.vote(songList.get(position).getTrack());
+//            votedIds.add(songList.get(position).getTrack());
+//            voteBox.setChecked(false);
+//            votes.setText(queue.getVote(songList.get(position).getTrack())+"");
+//            votes.setText(queue.getVote(songList.get(position).getTrack())+"");
         }
 
     }

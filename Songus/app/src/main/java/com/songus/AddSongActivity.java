@@ -16,7 +16,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.common.base.Joiner;
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 import com.songus.model.Song;
+import com.songus.model.SongQueue;
 import com.songus.songus.R;
 import com.songus.host.QueueActivity;
 
@@ -32,12 +37,14 @@ import retrofit.client.Response;
 
 
 public class AddSongActivity extends ActionBarActivity {
-
+    private String qr;
     private static Track SELECTED_TRACK;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_song);
+        qr = getIntent().getExtras().getString("QR");
+
     }
 
     @Override
@@ -118,10 +125,35 @@ public class AddSongActivity extends ActionBarActivity {
                          adb.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                              @Override
                              public void onClick(DialogInterface dialog, int which) {
-//                               Toast.makeText(getApplicationContext(), SELECTED_TRACK.name, Toast.LENGTH_LONG).show();
-                                 ((Songus) getApplication()).getSongQueue().addSong(new Song(SELECTED_TRACK));
-                                 Intent i = new Intent(getApplicationContext(), QueueActivity.class);
-                                 startActivity(i);
+                                 final Song s = new Song(SELECTED_TRACK);
+
+                                 ParseQuery<SongQueue> query = ParseQuery.getQuery(SongQueue.class);
+                                 query.getInBackground(qr, new GetCallback<SongQueue>() {
+                                     public void done(SongQueue songQueue, ParseException e) {
+                                         if (e == null) {
+                                             try {
+                                                 s.save();
+                                                 songQueue.getSongs().add(s);
+                                             }catch(ParseException e1){
+                                                 e1.printStackTrace();
+                                             }
+                                             songQueue.saveInBackground(new SaveCallback() {
+                                                 @Override
+                                                 public void done(ParseException e) {
+                                                     if(e != null){
+                                                         e.printStackTrace();
+                                                     }
+                                                     Intent i = new Intent(getApplicationContext(), QueueActivity.class);
+                                                     i.putExtra("QR", qr);
+                                                     startActivity(i);
+                                                 }
+                                             });
+                                         }else{
+                                             e.printStackTrace();
+                                         }
+                                     }
+                                 });
+
                              }
                          });
 

@@ -56,11 +56,6 @@
             android:label="@string/title_activity_queue"
             >
         </activity>
-        <activity
-            android:name="com.songus.attendee.QueueActivity"
-            android:label="@string/title_activity_queue"
-            >
-        </activity>
         <activity android:name="com.spotify.sdk.android.authentication.LoginActivity" />
         <service android:name="com.songus.host.PlayMusic"
             android:exported="false"/>

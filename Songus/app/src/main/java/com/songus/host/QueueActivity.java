@@ -11,6 +11,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,10 @@ import com.google.zxing.WriterException;
 import com.jwetherell.quick_response_code.data.Contents;
 import com.jwetherell.quick_response_code.qrcode.QRCodeEncoder;
 
+import com.parse.GetCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.songus.model.Song;
 import com.songus.model.SongQueue;
 import com.songus.AddSongActivity;
@@ -34,9 +39,10 @@ import com.songus.songus.R;
 import com.songus.SongQueueAdapter;
 import com.songus.Songus;
 
-
-
 import java.util.ArrayList;
+import java.util.List;
+
+import kaaes.spotify.webapi.android.models.Track;
 
 public class QueueActivity extends ActionBarActivity{
 
@@ -44,28 +50,39 @@ public class QueueActivity extends ActionBarActivity{
     private boolean justSkipped = false;
     private ArrayList<String> votedIds;
     private RecyclerView mRecyclerView;
+    private Songus songus;
+    private String qr;
+    private List<Song> songList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
-        setTitle("Play Queue - Event #45123");
-
+        setTitle("Play Queue");
+        if(getIntent().getExtras() != null){
+            qr = getIntent().getExtras().getString("QR");
+            setTitle("Play Queue - Event #" + qr);
+        }
         votedIds = new ArrayList<>();
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setAdapter(new SongQueueAdapter(((Songus)getApplication()).getSongQueue(), votedIds));
+        songus = (Songus) getApplication();
 
+        ParseQuery<SongQueue> query = ParseQuery.getQuery(SongQueue.class);
+        SongQueue songQueue = null;
+        try {
+            songQueue = query.get(qr);
+            songQueue.fetchIfNeeded();
+            songList = songQueue.getList();
+            mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
+            LinearLayoutManager layoutManager = new LinearLayoutManager(mRecyclerView.getContext());
+            mRecyclerView.setLayoutManager(layoutManager);
+            mRecyclerView.setAdapter(new SongQueueAdapter(songList, qr, songus));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-        // TODO
-        SongQueue songQueue = ((Songus)getApplication()).getSongQueue();
-        /*ParseObject queueParse = new ParseObject("PlayQueue");
-        queueParse.put("songList", ((Songus)getApplication()).getSongQueue());*/
-        songQueue.getParseObject().saveInBackground();
-
-        Typeface roboto = ((Songus)getApplication()).roboto;
-        Typeface roboto_bold = ((Songus)getApplication()).roboto_bold;
+        Typeface roboto = songus.roboto;
+        Typeface roboto_bold = songus.roboto_bold;
         ((Button)findViewById(R.id.queue_add)).setTypeface(roboto_bold);
         ((Button)findViewById(R.id.queue_end)).setTypeface(roboto);
         ((Button)findViewById(R.id.queue_qr)).setTypeface(roboto);
@@ -96,6 +113,7 @@ public class QueueActivity extends ActionBarActivity{
 
     public void addSong(View v){
         Intent i = new Intent(this, AddSongActivity.class);
+        i.putExtra("QR", qr);
         startActivity(i);
     }
 
@@ -111,7 +129,7 @@ public class QueueActivity extends ActionBarActivity{
         // This uses jwetherell's zxing QRCodeEncoder
         try {
             // generate a 150x150 QR code
-            QRCodeEncoder encoder = new QRCodeEncoder("POKE!! HAH!",
+            QRCodeEncoder encoder = new QRCodeEncoder(qr,
                     null,
                     Contents.Type.TEXT,
                     BarcodeFormat.QR_CODE.toString(),
@@ -156,8 +174,6 @@ public class QueueActivity extends ActionBarActivity{
     }
 
     public void next(View v){
-        SongQueue songQueue = ((Songus) getApplication()).getSongQueue();
-
         if(v == null){
             if(justSkipped) {
                 justSkipped = false;
@@ -167,27 +183,30 @@ public class QueueActivity extends ActionBarActivity{
             justSkipped = true;
         }
         if(currentSong!=null){
-            songQueue.removeSong(currentSong.getTrack());
+            songList.remove(currentSong.getTrack());
             RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
             mRecyclerView.getAdapter().notifyDataSetChanged();
         }
-        if(songQueue.getSongs().size()>0){
-            Song song = songQueue.getSong(0);
-            ((TextView)findViewById(R.id.playback_song_name)).setText(song.getTrack().name);
-            ((TextView)findViewById(R.id.playback_artist_name)).setText(song.getTrack().artists.get(0).name);
+        List<Song> songs = new ArrayList<>();
+        songs = songList;
+        if(songs.size()>0){
+            Song song = null;
+            song = songs.get(0);
+            Track t = songus.getTrackById(song.getTrack());
+            ((TextView)findViewById(R.id.playback_song_name)).setText(t.name);
+            ((TextView)findViewById(R.id.playback_artist_name)).setText(t.artists.get(0).name);
             if(mBound) {
-                mService.play(song.getTrack().uri);
+                mService.play(t.uri);
                 currentSong = song;
             }
+
         }else{
             if(mBound) {
                 mService.pause();
             }
         }
-        mRecyclerView.setAdapter(new SongQueueAdapter(((Songus)getApplication()).getSongQueue(), votedIds));
+        mRecyclerView.setAdapter(new SongQueueAdapter(songs, qr, songus));
         mRecyclerView.getAdapter().notifyDataSetChanged();
-
-        mRecyclerView.invalidate();
     }
 
 
@@ -224,7 +243,7 @@ public class QueueActivity extends ActionBarActivity{
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(this, PlayMusic.class);
+        Intent intent = new Intent(getApplicationContext(), PlayMusic.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
