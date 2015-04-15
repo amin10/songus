@@ -39,14 +39,14 @@ public class Song extends ParseObject implements Comparable{
      * Increases the vote count by 1
      */
     public void vote(){
-        put(VOTES, getVote()+1);
+        increment(VOTES);
     }
 
     /**
      * Decreases the vote count by 1
      */
     public void withdrawVote(){
-        put(VOTES, getVote() - 1);
+        increment(VOTES, -1);
     }
 
     /**

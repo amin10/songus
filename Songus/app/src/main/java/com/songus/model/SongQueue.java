@@ -47,7 +47,9 @@ public class SongQueue extends ParseObject{
     }
 
     public List<Song> getList() throws ParseException {
-        return getSongs().getQuery().find();
+        ParseQuery<Song> query = getSongs().getQuery();
+        query.addDescendingOrder(Song.VOTES);
+        return query.find();
     }
 
     /**
@@ -61,6 +63,7 @@ public class SongQueue extends ParseObject{
         try {
             Song s = (Song) pq.getFirst();
             s.vote();
+            s.saveInBackground();
             return true;
         } catch (ParseException e) {
             e.printStackTrace();

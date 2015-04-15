@@ -1,5 +1,6 @@
 package com.songus;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,7 @@ public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.Song
         this.songus = songus;
         this.songList = songList;
         this.votedIds = new ArrayList<>();
+        this.qr = qr;
     }
 
     @Override
@@ -101,20 +103,29 @@ public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.Song
             name = (TextView) itemView.findViewById(R.id.name);
             votes = (TextView) itemView.findViewById(R.id.votes);
             voteBox = (CheckBox) itemView.findViewById(R.id.checkbox);
-//            if(votedIds.contains(songList.get(position).getTrack())){
-//                voteBox.setChecked(true);
-//            }
         }
 
         @Override
         public void onClick(View v) {
-//            int score = Integer.parseInt(votes.getText().toString())-1;
-//            queue.vote(songList.get(position).getTrack());
-//            votedIds.add(songList.get(position).getTrack());
-//            voteBox.setChecked(false);
-//            votes.setText(queue.getVote(songList.get(position).getTrack())+"");
-//            votes.setText(queue.getVote(songList.get(position).getTrack())+"");
-        }
+            int score = Integer.parseInt(votes.getText().toString());
+            if(voteBox.isChecked())
+                score += 1;
+            else
+                score -= 1;
+            votes.setText(score + "");
 
+            String track = songList.get(position).getTrack();
+            votedIds.add(track);
+
+            ParseQuery<SongQueue> query = ParseQuery.getQuery(SongQueue.class);
+            SongQueue songQueue = null;
+            try {
+                songQueue = query.get(qr);
+                songQueue.fetchIfNeeded();
+                songQueue.vote(track);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
