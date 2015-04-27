@@ -112,6 +112,7 @@ public class QueueActivity extends ActionBarActivity{
     public void addSong(View v){
         Intent i = new Intent(this, AddSongActivity.class);
         i.putExtra("QR", qr);
+        i.putExtra("HOST", false);
         startActivity(i);
     }
 

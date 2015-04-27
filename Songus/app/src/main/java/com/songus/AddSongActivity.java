@@ -23,7 +23,6 @@ import com.parse.SaveCallback;
 import com.songus.model.Song;
 import com.songus.model.SongQueue;
 import com.songus.songus.R;
-import com.songus.host.QueueActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,16 +34,28 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-
 public class AddSongActivity extends ActionBarActivity {
     private String qr;
+    private boolean host;
     private static Track SELECTED_TRACK;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_song);
         qr = getIntent().getExtras().getString("QR");
+        host = getIntent().getExtras().getBoolean("HOST");
+    }
 
+    private void startQueueActivity(){
+        if(host) {
+            Intent i = new Intent(getApplicationContext(), com.songus.host.QueueActivity.class);
+            i.putExtra("QR", qr);
+            startActivity(i);
+        }else{
+            Intent i = new Intent(getApplicationContext(), com.songus.attendee.QueueActivity.class);
+            i.putExtra("QR", qr);
+            startActivity(i);
+        }
     }
 
     @Override
@@ -67,12 +78,6 @@ public class AddSongActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void startQueueActivity(){
-        Intent i = new Intent(getApplicationContext(), QueueActivity.class);
-        i.putExtra("QR", qr);
-        startActivity(i);
     }
 
     public void search(View v){
