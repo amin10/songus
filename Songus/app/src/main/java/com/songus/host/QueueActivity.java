@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -53,6 +54,7 @@ public class QueueActivity extends ActionBarActivity{
     private Songus songus;
     private String qr;
     private List<Song> songList;
+    private SongQueue songQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,7 @@ public class QueueActivity extends ActionBarActivity{
         songus = (Songus) getApplication();
 
         ParseQuery<SongQueue> query = ParseQuery.getQuery(SongQueue.class);
-        SongQueue songQueue = null;
+        songQueue = null;
         try {
             songQueue = query.get(qr);
             songQueue.fetchIfNeeded();
@@ -184,22 +186,40 @@ public class QueueActivity extends ActionBarActivity{
             justSkipped = true;
         }
         if(currentSong!=null){
-            songList.remove(currentSong.getTrack());
+
+            //songList.remove(currentSong.getTrack());
+            songQueue.removeSong(currentSong.getTrack());
+            try {
+                songList = songQueue.getList();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
             mRecyclerView.getAdapter().notifyDataSetChanged();
         }
         List<Song> songs = new ArrayList<>();
         songs = songList;
         if(songs.size()>0){
-            Song song = null;
-            song = songs.get(0);
-            Track t = songus.getTrackById(song.getTrack());
-            ((TextView)findViewById(R.id.playback_song_name)).setText(t.name);
-            ((TextView)findViewById(R.id.playback_artist_name)).setText(t.artists.get(0).name);
-            if(mBound) {
-                mService.play(t.uri);
-                currentSong = song;
-            }
+            final Song song = songs.get(0);
+            // Get the track from the id of the track
+            new AsyncTask<String, Void, Track> (){
+
+                @Override
+                protected Track doInBackground(String... params) {
+                    return songus.getTrackById(params[0]);
+                }
+
+                @Override
+                protected void onPostExecute(Track track) {
+                    ((TextView)findViewById(R.id.playback_song_name)).setText(track.name);
+                    ((TextView)findViewById(R.id.playback_artist_name)).setText(track.artists.get(0).name);
+                    if(mBound) {
+                        mService.play(track.uri);
+                        currentSong = song;
+                    }
+                }
+            }.execute(song.getTrack());
+
 
         }else{
             if(mBound) {
