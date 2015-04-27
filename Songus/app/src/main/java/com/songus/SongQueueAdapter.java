@@ -1,6 +1,5 @@
 package com.songus;
 
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,14 +7,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.Atomics;
-import com.parse.CountCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.songus.Songus;
 import com.songus.model.Song;
 import com.songus.model.SongQueue;
 import com.songus.songus.R;
@@ -37,13 +30,11 @@ public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.Song
 
     private String qr;
     private List<Song> songList;
-    private List<String> votedIds;
     private Songus songus;
 
     public SongQueueAdapter(List<Song> songList, String qr, Songus songus){
         this.songus = songus;
         this.songList = songList;
-        this.votedIds = new ArrayList<>();
         this.qr = qr;
     }
 
@@ -115,14 +106,18 @@ public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.Song
             votes.setText(score + "");
 
             String track = songList.get(position).getTrack();
-            votedIds.add(track);
 
             ParseQuery<SongQueue> query = ParseQuery.getQuery(SongQueue.class);
             SongQueue songQueue = null;
             try {
+                boolean isChecked = voteBox.isChecked();
                 songQueue = query.get(qr);
                 songQueue.fetchIfNeeded();
-                songQueue.vote(track);
+                if(isChecked) {
+                    songQueue.vote(track);
+                }else{
+                    songQueue.withdrawVote(track);
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }

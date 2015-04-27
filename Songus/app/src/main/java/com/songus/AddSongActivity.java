@@ -69,6 +69,12 @@ public class AddSongActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void startQueueActivity(){
+        Intent i = new Intent(getApplicationContext(), QueueActivity.class);
+        i.putExtra("QR", qr);
+        startActivity(i);
+    }
+
     public void search(View v){
         final Context context = this;
         SpotifyService spotify = ((Songus)getApplication()).getSpotifyService();
@@ -131,23 +137,34 @@ public class AddSongActivity extends ActionBarActivity {
                                  query.getInBackground(qr, new GetCallback<SongQueue>() {
                                      public void done(SongQueue songQueue, ParseException e) {
                                          if (e == null) {
-                                             try {
-                                                 s.save();
-                                                 songQueue.getSongs().add(s);
-                                             }catch(ParseException e1){
-                                                 e1.printStackTrace();
-                                             }
-                                             songQueue.saveInBackground(new SaveCallback() {
-                                                 @Override
-                                                 public void done(ParseException e) {
-                                                     if(e != null){
-                                                         e.printStackTrace();
+
+                                                 ParseQuery<Song> currentSongs = songQueue.getSongs().getQuery();
+                                                 currentSongs.whereEqualTo(Song.TRACK_ID, SELECTED_TRACK.id);
+                                                 try{
+                                                     Song existingSong = currentSongs.getFirst();
+                                                     //If no exception thrown. Song already in queue:
+                                                     Toast.makeText(getApplicationContext(),getResources().getString(R.string.song_exists), Toast.LENGTH_LONG).show();
+                                                     existingSong.vote();
+                                                     existingSong.save();
+                                                     startQueueActivity();
+                                                 }catch(ParseException e1){//Else, song being saved is in fact unique.
+                                                     try {
+                                                         s.save();
+                                                         songQueue.getSongs().add(s);
+                                                         songQueue.saveInBackground(new SaveCallback() {
+                                                             @Override
+                                                             public void done(ParseException e) {
+                                                                 if(e != null){
+                                                                     e.printStackTrace();
+                                                                 }
+                                                               startQueueActivity();
+                                                             }
+                                                         });
+                                                     } catch (ParseException e2) {//saving fails.
+                                                         e2.printStackTrace();
                                                      }
-                                                     Intent i = new Intent(getApplicationContext(), QueueActivity.class);
-                                                     i.putExtra("QR", qr);
-                                                     startActivity(i);
                                                  }
-                                             });
+
                                          }else{
                                              e.printStackTrace();
                                          }
