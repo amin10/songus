@@ -18,6 +18,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.songus.model.Song;
 import com.songus.model.SongQueue;
@@ -29,6 +30,7 @@ import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
 
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -155,6 +157,8 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                                             final SongQueue q = new SongQueue();
                                             for(PlaylistTrack p : playlistTrackPager.items){
                                                 Song s = new Song(p.track);
+                                                s.vote();
+                                                s.put("voters", Arrays.asList(ParseUser.getCurrentUser().getObjectId()));
                                                 try{
                                                     s.save();
                                                     q.addSong(s);

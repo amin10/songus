@@ -28,6 +28,7 @@ import com.jwetherell.quick_response_code.data.Contents;
 import com.jwetherell.quick_response_code.qrcode.QRCodeEncoder;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.songus.AddSongActivity;
 import com.songus.JoinActivity;
 import com.songus.SongQueueAdapter;
@@ -84,6 +85,7 @@ public class QueueActivity extends ActionBarActivity{
         ((Button)findViewById(R.id.queue_add)).setTypeface(roboto_bold);
         ((Button)findViewById(R.id.queue_end)).setTypeface(roboto);
         ((Button)findViewById(R.id.queue_qr)).setTypeface(roboto);
+
     }
 
 

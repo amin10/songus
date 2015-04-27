@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.songus.model.Song;
 import com.songus.model.SongQueue;
 import com.songus.songus.R;
@@ -31,11 +32,19 @@ public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.Song
     private String qr;
     private List<Song> songList;
     private Songus songus;
+    private List<Integer> voteList;
+    private List<List> voterList;
 
     public SongQueueAdapter(List<Song> songList, String qr, Songus songus){
         this.songus = songus;
         this.songList = songList;
         this.qr = qr;
+        this.voteList = new ArrayList<Integer>();
+        this.voterList = new ArrayList<List>();
+        for(Song s : songList){
+            voteList.add(s.getVote());
+            voterList.add(s.getList("voters"));
+        }
     }
 
     @Override
@@ -71,9 +80,9 @@ public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.Song
         holder.position = position;
         holder.name.setText(t.get().name);
         holder.artist.setText(t.get().artists.get(0).name);
-        int votes = songList.get(position).getVote();
+        int votes = voteList.get(position);
         holder.votes.setText("" + votes);
-
+        holder.voteBox.setChecked(voterList.get(position).contains(ParseUser.getCurrentUser().getObjectId()));
     }
 
     @Override
@@ -103,7 +112,11 @@ public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.Song
                 score += 1;
             else
                 score -= 1;
-            votes.setText(score + "");
+            voteList.set(position,score);
+            if(!voterList.get(position).remove(ParseUser.getCurrentUser().getObjectId())){
+                voterList.get(position).add(ParseUser.getCurrentUser().getObjectId());
+            }
+            notifyItemChanged(position);
 
             String track = songList.get(position).getTrack();
 

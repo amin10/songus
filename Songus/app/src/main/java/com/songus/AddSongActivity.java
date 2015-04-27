@@ -19,12 +19,14 @@ import com.google.common.base.Joiner;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.songus.model.Song;
 import com.songus.model.SongQueue;
 import com.songus.songus.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import kaaes.spotify.webapi.android.SpotifyService;
@@ -148,12 +150,22 @@ public class AddSongActivity extends ActionBarActivity {
                                                  try{
                                                      Song existingSong = currentSongs.getFirst();
                                                      //If no exception thrown. Song already in queue:
-                                                     Toast.makeText(getApplicationContext(),getResources().getString(R.string.song_exists), Toast.LENGTH_LONG).show();
-                                                     existingSong.vote();
-                                                     existingSong.save();
-                                                     startQueueActivity();
+
+                                                     List<Object> voters = existingSong.getList("voters");
+                                                     if(voters.contains(ParseUser.getCurrentUser().getObjectId())){
+                                                         Toast.makeText(getApplicationContext(),getResources().getString(R.string.song_exists_and_voted), Toast.LENGTH_LONG).show();
+                                                         startQueueActivity();
+                                                     }else {
+                                                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.song_exists), Toast.LENGTH_LONG).show();
+                                                         existingSong.vote();
+                                                         existingSong.add("voters", ParseUser.getCurrentUser().getObjectId());
+                                                         existingSong.save();
+                                                         startQueueActivity();
+                                                     }
                                                  }catch(ParseException e1){//Else, song being saved is in fact unique.
                                                      try {
+                                                         s.vote();
+                                                         s.put("voters", Arrays.asList(ParseUser.getCurrentUser().getObjectId()));
                                                          s.save();
                                                          songQueue.getSongs().add(s);
                                                          songQueue.saveInBackground(new SaveCallback() {

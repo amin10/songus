@@ -32,6 +32,7 @@ import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 import com.songus.model.Song;
 import com.songus.model.SongQueue;
 import com.songus.AddSongActivity;
@@ -89,7 +90,6 @@ public class QueueActivity extends ActionBarActivity{
         ((Button)findViewById(R.id.queue_end)).setTypeface(roboto);
         ((Button)findViewById(R.id.queue_qr)).setTypeface(roboto);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -229,7 +229,6 @@ public class QueueActivity extends ActionBarActivity{
         mRecyclerView.setAdapter(new SongQueueAdapter(songs, qr, songus));
         mRecyclerView.getAdapter().notifyDataSetChanged();
     }
-
 
     private boolean mBound = false;
     private PlayMusic mService;

@@ -9,6 +9,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
@@ -63,6 +64,7 @@ public class SongQueue extends ParseObject{
         try {
             Song s = (Song) pq.getFirst();
             s.vote();
+            s.getList("voters").add(ParseUser.getCurrentUser().getObjectId());
             s.saveInBackground();
             return true;
         } catch (ParseException e) {
@@ -82,6 +84,7 @@ public class SongQueue extends ParseObject{
         try {
             Song s = (Song) pq.getFirst();
             s.withdrawVote();
+            s.getList("voters").add(ParseUser.getCurrentUser().getObjectId());
             return true;
         } catch (ParseException e) {
             e.printStackTrace();
