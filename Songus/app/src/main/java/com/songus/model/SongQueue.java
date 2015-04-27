@@ -13,6 +13,7 @@ import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -63,8 +64,8 @@ public class SongQueue extends ParseObject{
         pq.whereEqualTo(Song.TRACK_ID, track);
         try {
             Song s = (Song) pq.getFirst();
+            s.addUnique("voters",ParseUser.getCurrentUser().getObjectId());
             s.vote();
-            s.getList("voters").add(ParseUser.getCurrentUser().getObjectId());
             s.saveInBackground();
             return true;
         } catch (ParseException e) {
@@ -83,8 +84,11 @@ public class SongQueue extends ParseObject{
         pq.whereEqualTo(Song.TRACK_ID, track);
         try {
             Song s = (Song) pq.getFirst();
+            List<Object> l= s.getList("voters");
+            l.remove(ParseUser.getCurrentUser().getObjectId());
+            s.put("voters", l);
             s.withdrawVote();
-            s.getList("voters").add(ParseUser.getCurrentUser().getObjectId());
+            s.saveInBackground();
             return true;
         } catch (ParseException e) {
             e.printStackTrace();

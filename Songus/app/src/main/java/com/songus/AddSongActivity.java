@@ -158,7 +158,7 @@ public class AddSongActivity extends ActionBarActivity {
                                                      }else {
                                                          Toast.makeText(getApplicationContext(), getResources().getString(R.string.song_exists), Toast.LENGTH_LONG).show();
                                                          existingSong.vote();
-                                                         existingSong.add("voters", ParseUser.getCurrentUser().getObjectId());
+                                                         existingSong.addUnique("voters", ParseUser.getCurrentUser().getObjectId());
                                                          existingSong.save();
                                                          startQueueActivity();
                                                      }
