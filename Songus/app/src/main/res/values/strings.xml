@@ -12,5 +12,6 @@
     <string name="title_activity_notification_view">NotificationView</string>
     <string name="song_exists">Song already in queue. It has been upvoted.</string>
     <string name="song_exists_and_voted">Song already in queue and you\'ve already upvoted it.</string>
+    <string name="queue_title_prefix">Play Queue - Event #</string>
 
 </resources>

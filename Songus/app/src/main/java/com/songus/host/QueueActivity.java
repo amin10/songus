@@ -7,12 +7,11 @@ import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,19 +26,15 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.jwetherell.quick_response_code.data.Contents;
 import com.jwetherell.quick_response_code.qrcode.QRCodeEncoder;
-
-import com.parse.GetCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
-import com.songus.model.Song;
-import com.songus.model.SongQueue;
 import com.songus.AddSongActivity;
 import com.songus.JoinActivity;
-import com.songus.songus.R;
 import com.songus.SongQueueAdapter;
 import com.songus.Songus;
+import com.songus.model.Song;
+import com.songus.model.SongQueue;
+import com.songus.songus.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +45,6 @@ public class QueueActivity extends ActionBarActivity{
 
     private Song currentSong = null;
     private boolean justSkipped = false;
-    private ArrayList<String> votedIds;
     private RecyclerView mRecyclerView;
     private Songus songus;
     private String qr;
@@ -64,9 +58,8 @@ public class QueueActivity extends ActionBarActivity{
         setTitle("Play Queue");
         if(getIntent().getExtras() != null){
             qr = getIntent().getExtras().getString("QR");
-            setTitle("Play Queue - Event #" + qr);
+            setTitle(getString(R.string.queue_title_prefix) + qr);
         }
-        votedIds = new ArrayList<>();
 
         songus = (Songus) getApplication();
 
@@ -187,15 +180,20 @@ public class QueueActivity extends ActionBarActivity{
         }
         if(currentSong!=null){
 
-            //songList.remove(currentSong.getTrack());
-            songQueue.removeSong(currentSong.getTrack());
+
             try {
-                songList = songQueue.getList();
+                ParseQuery<Song> songParseQuery = songQueue.getSongs().getQuery();
+                songParseQuery.whereEqualTo(Song.TRACK_ID, currentSong.getTrack());
+                Song justEnded = songParseQuery.getFirst();
+                justEnded.delete();
+                songQueue.fetchIfNeeded();
+                List<Song> tempSongList = songQueue.getList();
+                songList.clear();
+                songList.addAll(tempSongList);
+                mRecyclerView.getAdapter().notifyDataSetChanged();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
-            mRecyclerView.getAdapter().notifyDataSetChanged();
         }
         List<Song> songs = new ArrayList<>();
         songs = songList;
