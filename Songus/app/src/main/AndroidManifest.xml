@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <permission android:protectionLevel="signature"
         android:name="com.songus.songus.permission.C2D_MESSAGE" />
@@ -53,11 +54,13 @@
         </activity>
         <activity
             android:name="com.songus.host.QueueActivity"
-            android:label="@string/title_activity_queue">
+            android:label="@string/title_activity_queue"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="com.songus.attendee.QueueActivity"
-            android:label="@string/title_activity_queue">
+            android:label="@string/title_activity_queue"
+            android:screenOrientation="portrait">
         </activity>
         <activity android:name="com.spotify.sdk.android.authentication.LoginActivity" />
         <service android:name="com.songus.host.PlayMusic"

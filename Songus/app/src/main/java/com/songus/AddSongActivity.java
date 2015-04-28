@@ -69,20 +69,16 @@ public class AddSongActivity extends ActionBarActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_add_song) {
+            search();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    public void search(View v){
+    private void search(){
         final Context context = this;
         SpotifyService spotify = ((Songus)getApplication()).getSpotifyService();
 
@@ -107,6 +103,10 @@ public class AddSongActivity extends ActionBarActivity {
             queryBuilder.add("artist:"+artist);
         if(!song.isEmpty())
             queryBuilder.add("track:" + song);
+        if (queryBuilder.isEmpty()){
+            Toast.makeText(this, getString(R.string.add_song_no_search_terms_entered_msg), Toast.LENGTH_LONG).show();
+            return;
+        }
         String query = Joiner.on(' ').join(queryBuilder);
 
         spotify.searchTracks(query, new Callback<TracksPager>() {

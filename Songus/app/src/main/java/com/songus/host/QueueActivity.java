@@ -1,14 +1,19 @@
 package com.songus.host;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +31,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.jwetherell.quick_response_code.data.Contents;
 import com.jwetherell.quick_response_code.qrcode.QRCodeEncoder;
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.songus.AddSongActivity;
@@ -36,6 +42,11 @@ import com.songus.model.Song;
 import com.songus.model.SongQueue;
 import com.songus.songus.R;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +61,7 @@ public class QueueActivity extends ActionBarActivity{
     private String qr;
     private List<Song> songList;
     private SongQueue songQueue;
-
+    private Bitmap qr_bm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +83,7 @@ public class QueueActivity extends ActionBarActivity{
             mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
             LinearLayoutManager layoutManager = new LinearLayoutManager(mRecyclerView.getContext());
             mRecyclerView.setLayoutManager(layoutManager);
-            mRecyclerView.setAdapter(new SongQueueAdapter(songList, qr, songus));
+            mRecyclerView.setAdapter(new SongQueueAdapter(songList, qr, songus, true));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -82,28 +93,24 @@ public class QueueActivity extends ActionBarActivity{
         ((Button)findViewById(R.id.queue_add)).setTypeface(roboto_bold);
         ((Button)findViewById(R.id.queue_end)).setTypeface(roboto);
         ((Button)findViewById(R.id.queue_qr)).setTypeface(roboto);
+
+        final SwipeRefreshLayout refreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                try {
+                    refresh();
+                    refreshLayout.setRefreshing(false);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_queue, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        return false;
     }
 
     public void addSong(View v){
@@ -119,7 +126,6 @@ public class QueueActivity extends ActionBarActivity{
         final Dialog settingsDialog = new Dialog(this);
         settingsDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         settingsDialog.setContentView(getLayoutInflater().inflate(R.layout.qr, null));
-
         //Credit: http://stackoverflow.com/questions/8800919/how-to-generate-a-qr-code-for-an-android-application
 
         // This uses jwetherell's zxing QRCodeEncoder
@@ -130,13 +136,12 @@ public class QueueActivity extends ActionBarActivity{
                     Contents.Type.TEXT,
                     BarcodeFormat.QR_CODE.toString(),
                     500);
-            Bitmap bm = encoder.encodeAsBitmap();
+            qr_bm = encoder.encodeAsBitmap();
 
-            if(bm != null) {
-                ((ImageView)settingsDialog.findViewById(R.id.qr_img)).setImageBitmap(bm);
-            }else{
-                Toast.makeText(this, "Failed", Toast.LENGTH_LONG).show();
-            }
+            if(qr_bm != null) {
+                ((ImageView)settingsDialog.findViewById(R.id.qr_img)).setImageBitmap(qr_bm);
+
+            }else{/*Failed to generate QR code*/}
         } catch (WriterException e) {
             //eek
          }
@@ -148,13 +153,6 @@ public class QueueActivity extends ActionBarActivity{
             }
         });
         settingsDialog.show();
-    }
-
-    public void endEvent(View v){
-        Toast.makeText(this, "Event Ended", Toast.LENGTH_LONG);
-        //TODO end the event
-        Intent i = new Intent(this, JoinActivity.class);
-        startActivity(i);
     }
 
     public void play(View v){
@@ -179,18 +177,12 @@ public class QueueActivity extends ActionBarActivity{
             justSkipped = true;
         }
         if(currentSong!=null){
-
-
             try {
                 ParseQuery<Song> songParseQuery = songQueue.getSongs().getQuery();
                 songParseQuery.whereEqualTo(Song.TRACK_ID, currentSong.getTrack());
                 Song justEnded = songParseQuery.getFirst();
                 justEnded.delete();
-                songQueue.fetchIfNeeded();
-                List<Song> tempSongList = songQueue.getList();
-                songList.clear();
-                songList.addAll(tempSongList);
-                mRecyclerView.getAdapter().notifyDataSetChanged();
+                refresh();
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -224,7 +216,7 @@ public class QueueActivity extends ActionBarActivity{
                 mService.pause();
             }
         }
-        mRecyclerView.setAdapter(new SongQueueAdapter(songs, qr, songus));
+        mRecyclerView.setAdapter(new SongQueueAdapter(songs, qr, songus, true));
         mRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
@@ -253,9 +245,16 @@ public class QueueActivity extends ActionBarActivity{
     public void update(int positionInMs, int durationInMs) {
         int progressSeconds = positionInMs/1000,
                 durationSeconds = durationInMs/1000;
+        String pSeconds = progressSeconds%60+"", dSeconds = durationSeconds%60+"";
+        if(progressSeconds%60 <10){
+            pSeconds = "0"+pSeconds;
+        }if(durationSeconds%60<10){
+            dSeconds = "0"+dSeconds;
+        }
+
         ((TextView)findViewById(R.id.playback_progress))
-                .setText(progressSeconds / 60 + ":" + progressSeconds % 60 + "/" +
-                        durationSeconds / 60 + ":" + durationSeconds % 60);
+                .setText(progressSeconds / 60 + ":" + pSeconds + "/" +
+                        durationSeconds / 60 + ":" + dSeconds);
     }
 
     @Override
@@ -265,4 +264,30 @@ public class QueueActivity extends ActionBarActivity{
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
     }
 
+    private void refresh() throws ParseException{
+        songQueue.fetchIfNeeded();
+        List<Song> tempSongList = songQueue.getList();
+        songList.clear();
+        songList.addAll(tempSongList);
+        mRecyclerView.getAdapter().notifyDataSetChanged();
+    }
+    /**
+     * Permanently ends the event. Removes it from Parse database.
+     * @param v
+     */
+    public void endEvent(View v){
+
+        new AlertDialog.Builder(this)
+                .setTitle("End Event")
+                .setMessage("Really end the event?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        songQueue.deleteEventually();
+                        Intent i = new Intent(QueueActivity.this, JoinActivity.class);
+                        startActivity(i);
+                    }})
+                .setNegativeButton("No", null).show();
+    }
 }
+

@@ -9,38 +9,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Event: 45123"
-        android:id="@+id/add_song_event"
-        android:paddingTop="16dp"
-        android:paddingLeft="16dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Host: 12345"
-        android:id="@+id/add_song_host"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:paddingTop="16dp"
-        android:paddingRight="16dp"
-        android:layout_alignParentEnd="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Artist"
         android:id="@+id/textView2"
-        android:layout_marginTop="41dp"
-        android:layout_below="@+id/add_song_event"
+        android:paddingTop="40dp"
         android:paddingLeft="16dp"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"/>
 
     <EditText
         android:layout_width="wrap_content"
@@ -114,18 +89,16 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="See Results"
-        android:id="@+id/add_song_next"
-        android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/add_song_keyword"
-        android:layout_alignEnd="@+id/add_song_keyword"
-        android:onClick="search"
-        android:padding="8dp"
-        android:background="?attr/colorPrimaryDark"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+    <!--<Button-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/add_song_next"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:layout_alignRight="@+id/add_song_keyword"-->
+        <!--android:layout_alignEnd="@+id/add_song_keyword"-->
+        <!--android:padding="8dp"-->
+        <!--android:background="?attr/colorPrimaryDark"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:layout_alignParentStart="true" />-->
 </RelativeLayout>
 

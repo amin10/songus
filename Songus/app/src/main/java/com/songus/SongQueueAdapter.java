@@ -30,17 +30,34 @@ import retrofit.client.Response;
 public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.SongHolder> {
 
     private String qr;
-    private List<Song> songList;
     private Songus songus;
-    private List<Integer> voteList;
-    private List<List> voterList;
 
-    public SongQueueAdapter(List<Song> songList, String qr, Songus songus){
+    final private List<Song> songList;
+    final private List<Integer> voteList;
+    final private List<List> voterList;
+
+    private boolean isHost;
+
+    public SongQueueAdapter(final List<Song> songList, String qr, Songus songus, boolean host){
         this.songus = songus;
         this.songList = songList;
         this.qr = qr;
         this.voteList = new ArrayList<Integer>();
         this.voterList = new ArrayList<List>();
+        updateVoteLists();
+        this.isHost = host;
+        this.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+                updateVoteLists();
+            }
+        });
+    }
+
+    private void updateVoteLists(){
+        voteList.clear();
+        voterList.clear();
         for(Song s : songList){
             voteList.add(s.getVote());
             voterList.add(s.getList("voters"));
@@ -136,4 +153,5 @@ public class SongQueueAdapter extends RecyclerView.Adapter<SongQueueAdapter.Song
             }
         }
     }
+
 }
