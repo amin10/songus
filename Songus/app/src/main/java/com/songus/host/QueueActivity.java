@@ -140,15 +140,38 @@ public class QueueActivity extends ActionBarActivity{
 
             if(qr_bm != null) {
                 ((ImageView)settingsDialog.findViewById(R.id.qr_img)).setImageBitmap(qr_bm);
-
             }else{/*Failed to generate QR code*/}
         } catch (WriterException e) {
             //eek
          }
-
+        ((Button)settingsDialog.findViewById(R.id.qr_ok)).setText("SHARE");
         settingsDialog.findViewById(R.id.qr_ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ImageView content = (ImageView) settingsDialog.findViewById(R.id.qr_img);
+
+                content.setDrawingCacheEnabled(true);
+
+                Bitmap bitmap = content.getDrawingCache();
+                File root = Environment.getExternalStorageDirectory();
+                File cachePath = new File(root.getAbsolutePath() + "/DCIM/Camera/image.jpg");
+                try {
+                    cachePath.createNewFile();
+                    FileOutputStream ostream = new FileOutputStream(cachePath);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+                    ostream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                Intent share = new Intent(Intent.ACTION_SEND);
+//                share.setType("image/*");
+                share.setType("message/rfc822");
+                share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(cachePath));
+                share.putExtra(Intent.EXTRA_TITLE, "SongUs");
+                share.putExtra(Intent.EXTRA_SUBJECT, "Join this SongUs event");
+                share.putExtra(Intent.EXTRA_TEXT, "Scan this QR image with your SongUs app to join the event.\n\nGet the App here: "+getResources().getString(R.string.play_store_link));
+                startActivity(Intent.createChooser(share,"Share with"));
                 settingsDialog.dismiss();
             }
         });

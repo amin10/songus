@@ -15,5 +15,6 @@
     <string name="queue_title_prefix">Play Queue - Event #</string>
     <string name="action_add_song">See results</string>
     <string name="add_song_no_search_terms_entered_msg">Enter search term(s)</string>
+    <string name="play_store_link">https://play.google.com/apps/testing/com.songus.songus.\n\nTo become an alpha tester, first join https://groups.google.com/forum/#!forum/songus-alpha-testers\n\n--Sent from Songus</string>
 
 </resources>
