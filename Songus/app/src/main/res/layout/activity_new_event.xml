@@ -14,7 +14,7 @@
         android:id="@+id/title"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="73dp" />
+        android:layout_marginTop="70dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -23,7 +23,7 @@
         android:id="@+id/new_event_from_existing"
         android:layout_below="@+id/title"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="50dp"
         android:onClick="choosePlaylist"
         android:background="?attr/colorPrimaryDark"
         android:padding="8dp"/>
@@ -35,10 +35,36 @@
         android:id="@+id/new_event_from_scratch"
         android:layout_below="@+id/new_event_from_existing"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="63dp"
+        android:layout_marginTop="50dp"
         android:background="?attr/colorPrimaryDark"
         android:padding="8dp"
         android:nestedScrollingEnabled="false"
         android:onClick="emptyPlaylist" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="OR"
+        android:id="@+id/or"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp"
+        android:layout_below="@+id/new_event_from_scratch"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rejoin Existing Event as Host"
+        android:id="@+id/rejoin"
+        android:layout_below="@+id/or"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:background="?attr/colorPrimaryDark"
+        android:padding="8dp"
+        android:nestedScrollingEnabled="false"
+        android:onClick="existingEvent" />
+
+
 
 </RelativeLayout>

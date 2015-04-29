@@ -1,6 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context="com.songus.host.QueueActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_edit" android:title="Rename"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:orderInCategory="100" app:showAsAction="always" />
+    <item android:id="@+id/action_host_key" android:title="Host Access Code"
+        android:icon="@android:drawable/ic_menu_save"
+        android:orderInCategory="100" app:showAsAction="ifRoom" />
+
 </menu>

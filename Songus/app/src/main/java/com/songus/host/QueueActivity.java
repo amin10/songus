@@ -22,16 +22,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.jwetherell.quick_response_code.data.Contents;
 import com.jwetherell.quick_response_code.qrcode.QRCodeEncoder;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.songus.AddSongActivity;
@@ -43,10 +42,7 @@ import com.songus.model.SongQueue;
 import com.songus.songus.R;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +65,6 @@ public class QueueActivity extends ActionBarActivity{
         setTitle("Play Queue");
         if(getIntent().getExtras() != null){
             qr = getIntent().getExtras().getString("QR");
-            setTitle(getString(R.string.queue_title_prefix) + qr);
         }
 
         songus = (Songus) getApplication();
@@ -79,6 +74,7 @@ public class QueueActivity extends ActionBarActivity{
         try {
             songQueue = query.get(qr);
             songQueue.fetchIfNeeded();
+            setTitle(getString(R.string.queue_title_prefix) + " " + songQueue.getString("name"));
             songList = songQueue.getList();
             mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
             LinearLayoutManager layoutManager = new LinearLayoutManager(mRecyclerView.getContext());
@@ -106,11 +102,81 @@ public class QueueActivity extends ActionBarActivity{
                 }
             }
         });
+
+        if(!getIntent().getExtras().getBoolean("REJOINING")){
+            showHostKeyDialog(false);
+        }
+    }
+    public void showHostKeyDialog(boolean cancelable) {
+    /* Prompt to save host access key */
+        final Dialog welcomeDialog = new Dialog(this);
+        welcomeDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        welcomeDialog.setContentView(getLayoutInflater().inflate(R.layout.welcome_dialog, null));
+        TextView hostKey = (TextView) welcomeDialog.findViewById(R.id.welcome_hostkey);
+        hostKey.setText(getIntent().getExtras().getString("KEY"));
+        welcomeDialog.findViewById(R.id.welcome_share_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(android.content.Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(android.content.Intent.EXTRA_SUBJECT, "Host Access Code");
+                i.putExtra(android.content.Intent.EXTRA_TEXT, getIntent().getExtras().getString("KEY"));
+                startActivity(Intent.createChooser(i, "Save with"));
+                welcomeDialog.dismiss();
+            }
+        });
+        welcomeDialog.setCanceledOnTouchOutside(cancelable);
+        welcomeDialog.show();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return false;
+        getMenuInflater().inflate(R.menu.menu_queue, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_host_key) {
+            showHostKeyDialog(true);
+            return true;
+        }
+        if(id == R.id.action_edit){
+            showRenameDialog();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void showRenameDialog(){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+        alert.setTitle("Event Name:");
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(this);
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String value = input.getText().toString();
+                if(!value.isEmpty())
+                    setTitle(getString(R.string.queue_title_prefix) + " " + value);
+                else
+                    setTitle("Play Queue");
+                songQueue.put("name", value);
+                songQueue.saveEventually();
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
     }
 
     public void addSong(View v){
@@ -123,9 +189,9 @@ public class QueueActivity extends ActionBarActivity{
     public void qr(View v){
 
         //Credit: http://stackoverflow.com/questions/7693633/android-image-dialog-popup
-        final Dialog settingsDialog = new Dialog(this);
-        settingsDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        settingsDialog.setContentView(getLayoutInflater().inflate(R.layout.qr, null));
+        final Dialog qrDialog = new Dialog(this);
+        qrDialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        qrDialog.setContentView(getLayoutInflater().inflate(R.layout.qr, null));
         //Credit: http://stackoverflow.com/questions/8800919/how-to-generate-a-qr-code-for-an-android-application
 
         // This uses jwetherell's zxing QRCodeEncoder
@@ -139,16 +205,16 @@ public class QueueActivity extends ActionBarActivity{
             qr_bm = encoder.encodeAsBitmap();
 
             if(qr_bm != null) {
-                ((ImageView)settingsDialog.findViewById(R.id.qr_img)).setImageBitmap(qr_bm);
+                ((ImageView)qrDialog.findViewById(R.id.qr_img)).setImageBitmap(qr_bm);
             }else{/*Failed to generate QR code*/}
         } catch (WriterException e) {
             //eek
          }
-        ((Button)settingsDialog.findViewById(R.id.qr_ok)).setText("SHARE");
-        settingsDialog.findViewById(R.id.qr_ok).setOnClickListener(new View.OnClickListener() {
+        ((Button)qrDialog.findViewById(R.id.qr_ok)).setText("SHARE");
+        qrDialog.findViewById(R.id.qr_ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageView content = (ImageView) settingsDialog.findViewById(R.id.qr_img);
+                ImageView content = (ImageView) qrDialog.findViewById(R.id.qr_img);
 
                 content.setDrawingCacheEnabled(true);
 
@@ -165,17 +231,16 @@ public class QueueActivity extends ActionBarActivity{
                 }
 
                 Intent share = new Intent(Intent.ACTION_SEND);
-//                share.setType("image/*");
                 share.setType("message/rfc822");
                 share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(cachePath));
                 share.putExtra(Intent.EXTRA_TITLE, "SongUs");
                 share.putExtra(Intent.EXTRA_SUBJECT, "Join this SongUs event");
                 share.putExtra(Intent.EXTRA_TEXT, "Scan this QR image with your SongUs app to join the event.\n\nGet the App here: "+getResources().getString(R.string.play_store_link));
-                startActivity(Intent.createChooser(share,"Share with"));
-                settingsDialog.dismiss();
+                startActivity(Intent.createChooser(share, "Share with"));
+                qrDialog.dismiss();
             }
         });
-        settingsDialog.show();
+        qrDialog.show();
     }
 
     public void play(View v){
@@ -301,8 +366,8 @@ public class QueueActivity extends ActionBarActivity{
     public void endEvent(View v){
 
         new AlertDialog.Builder(this)
-                .setTitle("End Event")
-                .setMessage("Really end the event?")
+                .setTitle("WARNING!")
+                .setMessage("Really end the event? It will be deleted and you will not be able to rejoin.")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {

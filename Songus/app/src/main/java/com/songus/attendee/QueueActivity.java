@@ -49,7 +49,6 @@ public class QueueActivity extends ActionBarActivity{
         setTitle("Play Queue");
         if(getIntent().getExtras() != null){
             qr = getIntent().getExtras().getString("QR");
-            setTitle(getResources().getString(R.string.queue_title_prefix) + qr);
         }
 
         songus = (Songus) getApplication();
@@ -60,6 +59,10 @@ public class QueueActivity extends ActionBarActivity{
             songQueue = query.get(qr);
             songQueue.fetchIfNeeded();
             songList = songQueue.getList();
+            String name = songQueue.getString("name");
+            if(!(name.equals(getResources().getString(R.string.unnamed_event)) || name.isEmpty())){
+                setTitle(getString(R.string.queue_title_prefix)+" " + name);
+            }
             mRecyclerView = (RecyclerView) findViewById(R.id.queue_queue);
             LinearLayoutManager layoutManager = new LinearLayoutManager(mRecyclerView.getContext());
             mRecyclerView.setLayoutManager(layoutManager);

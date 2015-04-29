@@ -11,11 +11,14 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.songus.Songus;
@@ -75,12 +78,21 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
             @Override
             public void done(ParseException e) {
                 final SongQueue q = new SongQueue();
-                q.saveInBackground(new SaveCallback() {
+                final ParseObject hostKey = new ParseObject("HostKey");
+                hostKey.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
-                        Intent i = new Intent(getApplicationContext(), QueueActivity.class);
-                        i.putExtra("QR", q.getObjectId());
-                        startActivity(i);
+                        q.put("key",hostKey.getObjectId());
+                        q.put("name", getString(R.string.unnamed_event));
+                        q.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                Intent i = new Intent(getApplicationContext(), QueueActivity.class);
+                                i.putExtra("QR", q.getObjectId());
+                                i.putExtra("KEY", hostKey.getObjectId());
+                                startActivity(i);
+                            }
+                        });
                     }
                 });
             }
@@ -134,6 +146,7 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                                         @Override
                                         public void success(Pager<PlaylistTrack> playlistTrackPager, Response response) {
                                             final SongQueue q = new SongQueue();
+                                            final ParseObject hostKey = new ParseObject("HostKey");
                                             for(PlaylistTrack p : playlistTrackPager.items){
                                                 Song s = new Song(p.track);
                                                 s.vote();
@@ -143,14 +156,23 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                                                     q.addSong(s);
                                                 }catch(ParseException e){}
                                             }
-                                            q.saveInBackground(new SaveCallback() {
+                                            hostKey.saveInBackground(new SaveCallback() {
                                                 @Override
                                                 public void done(ParseException e) {
-                                                Intent i = new Intent(getApplicationContext(), QueueActivity.class);
-                                                i.putExtra("QR", q.getObjectId());
-                                                startActivity(i);
+                                                    q.put("key", hostKey.getObjectId());
+                                                    q.put("name", getString(R.string.unnamed_event));
+                                                    q.saveInBackground(new SaveCallback() {
+                                                        @Override
+                                                        public void done(ParseException e) {
+                                                            Intent i = new Intent(getApplicationContext(), QueueActivity.class);
+                                                            i.putExtra("QR", q.getObjectId());
+                                                            i.putExtra("KEY", hostKey.getObjectId());
+                                                            startActivity(i);
+                                                        }
+                                                    });
                                                 }
                                             });
+
                                         }
 
                                         @Override
@@ -179,7 +201,43 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
             }
         });
     }
+    public void existingEvent(View v){
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
+        alert.setTitle("Host Access Code");
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(this);
+        alert.setView(input);
+
+        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String value = input.getText().toString();
+                if(!value.isEmpty()){
+                    ParseQuery<SongQueue> query = ParseQuery.getQuery(SongQueue.class);
+                    query.whereEqualTo("key",value);
+                    try {
+                        SongQueue q = query.getFirst();
+                        Intent i = new Intent(getApplicationContext(), QueueActivity.class);
+                        i.putExtra("QR", q.getObjectId());
+                        i.putExtra("KEY", value);
+                        i.putExtra("REJOINING", true);
+                        startActivity(i);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
+    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == Songus.REQUEST_CODE) {

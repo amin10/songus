@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:orientation="vertical" android:background="?colorPrimary"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="You are hosting this event. If you need to\nrejoin as host you will need this access key:"
+        android:id="@+id/welcome_text"
+        android:padding="8dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
+        android:text="XXXXXX"
+        android:padding="5pt"
+        android:background="@drawable/swirl_pattern"
+        android:textStyle="bold"
+        android:id="@+id/welcome_hostkey" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="5pt"
+        android:id="@+id/welcome_share_button"
+        android:text="SAVE HOST ACCESS CODE"
+        android:background="?colorPrimary"
+        />
+</LinearLayout>

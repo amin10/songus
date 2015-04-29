@@ -12,9 +12,10 @@
     <string name="title_activity_notification_view">NotificationView</string>
     <string name="song_exists">Song already in queue. It has been upvoted.</string>
     <string name="song_exists_and_voted">Song already in queue and you\'ve already upvoted it.</string>
-    <string name="queue_title_prefix">Play Queue - Event #</string>
+    <string name="queue_title_prefix">Play Queue -</string>
     <string name="action_add_song">See results</string>
     <string name="add_song_no_search_terms_entered_msg">Enter search term(s)</string>
-    <string name="play_store_link">https://play.google.com/apps/testing/com.songus.songus.\n\nTo become an alpha tester, first join https://groups.google.com/forum/#!forum/songus-alpha-testers\n\n--Sent from Songus</string>
+    <string name="play_store_link">https://play.google.com/apps/testing/com.songus.songus.\n\nTo become an alpha tester, first join https://groups.google.com/forum/#!forum/songus-alpha-testers  ...then wait a couple hours LOL\n\n--Sent from Songus</string>
+    <string name="unnamed_event">Unnamed Event</string>
 
 </resources>
