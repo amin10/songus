@@ -46,7 +46,7 @@ public class QueueActivity extends ActionBarActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.attendee_activity_queue);
 
-        setTitle("Play Queue");
+        setTitle(getString(R.string.playlist));
         if(getIntent().getExtras() != null){
             qr = getIntent().getExtras().getString("QR");
         }

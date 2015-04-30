@@ -62,7 +62,7 @@ public class QueueActivity extends ActionBarActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
-        setTitle("Play Queue");
+        setTitle(getResources().getString(R.string.playlist));
         if(getIntent().getExtras() != null){
             qr = getIntent().getExtras().getString("QR");
         }
@@ -164,7 +164,7 @@ public class QueueActivity extends ActionBarActivity{
                 if(!value.isEmpty())
                     setTitle(getString(R.string.queue_title_prefix) + " " + value);
                 else
-                    setTitle("Play Queue");
+                    setTitle(getResources().getString(R.string.playlist));
                 songQueue.put("name", value);
                 songQueue.saveEventually();
             }

@@ -31,7 +31,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="EVENT QR"
+        android:text="@string/queue_qr_button"
         android:id="@+id/queue_qr"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
@@ -44,7 +44,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ADD SONG"
+        android:text="@string/queue_add_song"
         android:id="@+id/queue_add"
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="5px"
@@ -59,7 +59,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="END EVENT"
+        android:text="@string/queue_quit"
         android:id="@+id/queue_end"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"

@@ -52,6 +52,7 @@ public class AddSongActivity extends ActionBarActivity {
         if(host) {
             Intent i = new Intent(getApplicationContext(), com.songus.host.QueueActivity.class);
             i.putExtra("QR", qr);
+            i.putExtra("REJOINING", true);
             startActivity(i);
         }else{
             Intent i = new Intent(getApplicationContext(), com.songus.attendee.QueueActivity.class);
@@ -84,21 +85,21 @@ public class AddSongActivity extends ActionBarActivity {
 
         EditText artistField= (EditText)findViewById(R.id.add_song_artist);
         String artist = artistField.getText().toString();
-        EditText albumField= (EditText)findViewById(R.id.add_song_album);
-        String album = albumField.getText().toString();
+//        EditText albumField= (EditText)findViewById(R.id.add_song_album);
+//        String album = albumField.getText().toString();
         EditText songField= (EditText)findViewById(R.id.add_song_song);
         String song = songField.getText().toString();
-        EditText keywordsField= (EditText)findViewById(R.id.add_song_keyword);
-        String keywords = keywordsField.getText().toString();
-        keywords = Joiner.on('+').join(keywords.split("[^A-Za-z0-9_]+"));
+//        EditText keywordsField= (EditText)findViewById(R.id.add_song_keyword);
+//        String keywords = keywordsField.getText().toString();
+//        keywords = Joiner.on('+').join(keywords.split("[^A-Za-z0-9_]+"));
         song = Joiner.on('+').join(song.split("[^A-Za-z0-9_]+"));
-        album = Joiner.on('+').join(album.split("[^A-Za-z0-9_]+"));
+//        album = Joiner.on('+').join(album.split("[^A-Za-z0-9_]+"));
         artist = Joiner.on('+').join(artist.split("[^A-Za-z0-9_]+"));
         ArrayList<String> queryBuilder = new ArrayList<>();
-        if(!keywords.isEmpty())
-            queryBuilder.add(keywords);
-        if(!album.isEmpty())
-            queryBuilder.add("album:"+album);
+//        if(!keywords.isEmpty())
+//            queryBuilder.add(keywords);
+//        if(!album.isEmpty())
+//            queryBuilder.add("album:"+album);
         if(!artist.isEmpty())
             queryBuilder.add("artist:"+artist);
         if(!song.isEmpty())
