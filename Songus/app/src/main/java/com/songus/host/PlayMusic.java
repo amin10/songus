@@ -90,7 +90,6 @@ public class PlayMusic extends Service implements PlayerNotificationCallback,
                 mPlayer.addConnectionStateCallback(PlayMusic.this);
                 mPlayer.addPlayerNotificationCallback(PlayMusic.this);
                 playerReady.release();
-                //mPlayer.play("spotify:track:2TpxZ7JUBn3uw46aR7qd6V");
             }
 
             @Override

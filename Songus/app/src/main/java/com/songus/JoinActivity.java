@@ -85,6 +85,7 @@ public class JoinActivity extends Activity {
         if(requestCode == Songus.REQUEST_CODE){
             //Get Spotify
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, data);
+
             songus.setResponse(response);
             songus.setAuthCode(response.getAccessToken());
             SpotifyApi api = new SpotifyApi();
