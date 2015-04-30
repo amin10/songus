@@ -103,7 +103,23 @@ public class QueueActivity extends ActionBarActivity{
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        return false;
+        getMenuInflater().inflate(R.menu.menu_attendee_queue, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_refresh) {
+            try {
+                refresh();
+                return true;
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void addSong(View v){
