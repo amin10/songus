@@ -1,6 +1,7 @@
 package com.songus.host;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -116,7 +117,7 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                                 findViewById(R.id.new_event_from_existing).post(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(getApplicationContext(), "You have no Playlists on Spotify.",Toast.LENGTH_LONG ).show();
+                                        Toast.makeText(getApplicationContext(), "You have no Playlists on Spotify.", Toast.LENGTH_LONG).show();
                                     }
                                 });
                                 return;
@@ -250,22 +251,128 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == Songus.REQUEST_CODE) {
+            Intent back;
             //Get Spotify
             AuthenticationResponse response = AuthenticationClient.getResponse(resultCode, intent);
+            final Context currentContext = this;
+            AlertDialog.Builder errorMessage;
             switch(response.getType()){
                 // Response was successful and contains auth token
                 case TOKEN:
+
                     // Handle successful response
                     songus.setResponse(response);
                     songus.setAuthCode(response.getAccessToken());
                     SpotifyApi api = new SpotifyApi();
                     api.setAccessToken(songus.getAuthCode());
                     songus.setSpotifyApi(api);
-                    SpotifyService spotify = api.getService();
+                    final SpotifyService spotify = api.getService();
                     songus.setSpotifyService(spotify);
+                    final ProgressDialog checkingPremium = new ProgressDialog(this);
+                    checkingPremium.setTitle("Checking premium");
+                    checkingPremium.setMessage("Please wait while we check if your account is premium.");
+                    checkingPremium.show();
+                    spotify.getMe(new Callback<User>() {
+                        @Override
+                        public void success(User user, Response response) {
+                            checkingPremium.dismiss();
+                            if(user.product != "premium"){
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        AlertDialog.Builder errorMessage
+                                                = new AlertDialog.Builder(currentContext);
+                                        errorMessage.setTitle("Account not premium.");
+                                        errorMessage
+                                                .setMessage("Cannot host or stream if account not premium.")
+                                                .setCancelable(false)
+                                                .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        AuthenticationClient.logout(currentContext);
+                                                        Intent back = new Intent(currentContext, JoinActivity.class);
+                                                        startActivity(back);
+                                                    }
+                                                })
+                                                .create().show();
+
+
+                                    }
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void failure(RetrofitError retrofitError) {
+                            checkingPremium.dismiss();
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    AlertDialog.Builder errorMessage
+                                            = new AlertDialog.Builder(currentContext);
+                                    errorMessage.setTitle("Unable to check");
+                                    errorMessage
+                                            .setMessage("Unable to check if account is premium.")
+                                            .setCancelable(false)
+                                            .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    AuthenticationClient.logout(currentContext);
+                                                    Intent back = new Intent(currentContext, JoinActivity.class);
+                                                    startActivity(back);
+                                                }
+                                            })
+                                            .create().show();
+
+
+                                }
+                            });
+                        }
+                    });
+
+                    break;
+
+                case ERROR:
+                    errorMessage = new AlertDialog.Builder(this);
+                    errorMessage.setTitle("Error trying to sign in");
+                    errorMessage
+                            .setMessage("Error connecting to Spotify. Did you authorize the app?")
+                            .setCancelable(false)
+                            .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    AuthenticationClient.logout(currentContext);
+                                    Intent back = new Intent(currentContext, JoinActivity.class);
+                                    startActivity(back);
+                                }
+                            })
+                            .create().show();
+                    break;
+
+                case UNKNOWN:
+                    errorMessage = new AlertDialog.Builder(this);
+                    errorMessage.setTitle("Unable to connect to Spotify");
+                    errorMessage
+                            .setMessage("Unable to connect to Spotify for unknown reasons.")
+                            .setCancelable(false)
+                            .setPositiveButton("Logout", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    AuthenticationClient.logout(currentContext);
+                                    Intent back = new Intent(currentContext, JoinActivity.class);
+                                    startActivity(back);
+                                }
+                            })
+                            .create().show();
+                    break;
+
+                case EMPTY:
+                    back = new Intent(currentContext, JoinActivity.class);
+                    startActivity(back);
                     break;
 
                 default:
+                    Log.d("SpotifyAuthTest", "Lolz can't be here");
                     // TODO tell the user that they need spotify premium to host an event.
             }
 
