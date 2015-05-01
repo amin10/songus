@@ -186,7 +186,12 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
 
                                                         @Override
                                                         public void failure(RetrofitError retrofitError) {
-                                                            Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
+                                                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    Toast.makeText(context, "error", Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            });
                                                         }
                                                     });
                                         }
@@ -276,7 +281,7 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                         @Override
                         public void success(User user, Response response) {
                             checkingPremium.dismiss();
-                            if(user.product != "premium"){
+                            if(!user.product.equals("premium")){
                                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                                     @Override
                                     public void run() {
