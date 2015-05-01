@@ -291,7 +291,9 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         AuthenticationClient.logout(currentContext);
                                                         Intent back = new Intent(currentContext, JoinActivity.class);
+                                                        back.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                         startActivity(back);
+                                                        finish();
                                                     }
                                                 })
                                                 .create().show();
@@ -319,7 +321,9 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                                                 public void onClick(DialogInterface dialog, int which) {
                                                     AuthenticationClient.logout(currentContext);
                                                     Intent back = new Intent(currentContext, JoinActivity.class);
+                                                    back.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                                     startActivity(back);
+                                                    finish();
                                                 }
                                             })
                                             .create().show();
@@ -343,7 +347,9 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                                 public void onClick(DialogInterface dialog, int which) {
                                     AuthenticationClient.logout(currentContext);
                                     Intent back = new Intent(currentContext, JoinActivity.class);
+                                    back.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(back);
+                                    finish();
                                 }
                             })
                             .create().show();
@@ -360,7 +366,9 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                                 public void onClick(DialogInterface dialog, int which) {
                                     AuthenticationClient.logout(currentContext);
                                     Intent back = new Intent(currentContext, JoinActivity.class);
+                                    back.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(back);
+                                    finish();
                                 }
                             })
                             .create().show();
@@ -368,7 +376,9 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
 
                 case EMPTY:
                     back = new Intent(currentContext, JoinActivity.class);
+                    back.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(back);
+                    finish();
                     break;
 
                 default:
