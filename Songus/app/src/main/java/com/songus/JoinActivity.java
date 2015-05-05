@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseAnalytics;
 import com.songus.songus.R;
 import com.songus.host.NewEventActivity;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
@@ -33,6 +34,8 @@ public class JoinActivity extends Activity {
         title.setTypeface(roboto);
         ((TextView) findViewById(R.id.login_attendee)).setTypeface(roboto_bold);
         ((TextView) findViewById(R.id.login_host)).setTypeface(roboto);
+
+        ParseAnalytics.trackAppOpenedInBackground(getIntent());
     }
 
     public void loginHost(View v){

@@ -302,8 +302,6 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                                                     }
                                                 })
                                                 .create().show();
-
-
                                     }
                                 });
                             }
@@ -388,9 +386,7 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
 
                 default:
                     Log.d("SpotifyAuthTest", "Lolz can't be here");
-                    // TODO tell the user that they need spotify premium to host an event.
             }
-
         }
     }
 

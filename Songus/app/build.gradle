@@ -38,5 +38,6 @@ dependencies {
     compile 'com.spotify.sdk:spotify-player:1.0.0-beta9@aar'
     compile 'com.parse.bolts:bolts-android:1.+'
     compile fileTree(dir: 'libs', include: 'Parse-*.jar')
+    compile fileTree(dir: 'libs', include: 'ParseCrashReporting-*.jar')
     compile files('libs/core-3.2.0.jar')
 }

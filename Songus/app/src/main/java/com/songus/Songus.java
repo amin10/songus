@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.parse.Parse;
 import com.parse.ParseACL;
+import com.parse.ParseCrashReporting;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
@@ -66,13 +67,13 @@ public class Songus extends Application {
         defaultACL.setPublicReadAccess(true);
         ParseACL.setDefaultACL(defaultACL, true);
 
+        ParseCrashReporting.enable(this);
         Parse.initialize(this, "U4wtb9EosO0IeqGXMKd68QCgDGi68d2AVyg5NsHT", "42SJicw8BkGDB5Bkn0Pof1vWqcyl9bQmT2kqjrJP");
         /*
          Initialize here
          */
         roboto = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Regular.ttf");
         roboto_bold = Typeface.createFromAsset(getAssets(), "fonts/Roboto-Bold.ttf");
-
     }
 
     public void setAuthCode(String authCode) {
