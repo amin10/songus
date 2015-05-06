@@ -3,6 +3,7 @@ package com.songus;
 import android.app.Application;
 import android.graphics.Typeface;
 import android.os.StrictMode;
+import android.text.format.Time;
 import android.util.Log;
 
 import com.parse.Parse;
@@ -22,6 +23,7 @@ import com.spotify.sdk.android.authentication.AuthenticationResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
@@ -35,11 +37,8 @@ public class Songus extends Application {
     /*
      Global Fields Here
      */
-
     public static final String CLIENT_ID = "d840bdd10b4947d49b4186ddac34b0de";
     public static final String REDIRECT_URI = "http://www.malekbr.com/";
-
-
 
     public static final int REQUEST_CODE = 1337;
     private String authCode;
@@ -49,13 +48,14 @@ public class Songus extends Application {
 
     public static Typeface roboto;
     public static Typeface roboto_bold;
-//    private static SongQueue songQueue;
+//  private static SongQueue songQueue;
 
     public static final String IS_HOST = "isHost";
 
     @Override
     public void onCreate() {
         super.onCreate();
+
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -68,6 +68,7 @@ public class Songus extends Application {
         ParseACL.setDefaultACL(defaultACL, true);
 
         ParseCrashReporting.enable(this);
+
         Parse.initialize(this, "U4wtb9EosO0IeqGXMKd68QCgDGi68d2AVyg5NsHT", "42SJicw8BkGDB5Bkn0Pof1vWqcyl9bQmT2kqjrJP");
         /*
          Initialize here

@@ -31,6 +31,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.jwetherell.quick_response_code.data.Contents;
 import com.jwetherell.quick_response_code.qrcode.QRCodeEncoder;
+import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.songus.AddSongActivity;
@@ -44,7 +45,9 @@ import com.songus.songus.R;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kaaes.spotify.webapi.android.models.Track;
 
@@ -97,6 +100,11 @@ public class QueueActivity extends ActionBarActivity{
                 try {
                     refresh();
                     refreshLayout.setRefreshing(false);
+
+                    Map<String, String> dimensions = new HashMap<String, String>();
+                    dimensions.put("action", "pull");
+                    dimensions.put("role", "host");
+                    ParseAnalytics.trackEventInBackground("queue_refresh", dimensions);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -105,6 +113,9 @@ public class QueueActivity extends ActionBarActivity{
 
         if(!getIntent().getExtras().getBoolean("REJOINING")){
             showHostKeyDialog(false);
+        }else{
+            Map<String, String> dimensions = new HashMap<String, String>();
+            ParseAnalytics.trackEventInBackground("rejoin_success", dimensions);
         }
     }
     public void showHostKeyDialog(boolean cancelable) {
@@ -140,6 +151,9 @@ public class QueueActivity extends ActionBarActivity{
         int id = item.getItemId();
         if (id == R.id.action_host_key) {
             showHostKeyDialog(true);
+            Map<String, String> dimensions = new HashMap<String, String>();
+            dimensions.put("method", "menu");
+            ParseAnalytics.trackEventInBackground("save_host_key", dimensions);
             return true;
         }
         if(id == R.id.action_edit){
@@ -167,12 +181,15 @@ public class QueueActivity extends ActionBarActivity{
                     setTitle(getResources().getString(R.string.playlist));
                 songQueue.put("name", value);
                 songQueue.saveEventually();
+                Map<String, String> dimensions = new HashMap<String, String>();
+                ParseAnalytics.trackEventInBackground("rename", dimensions);
             }
         });
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                // Canceled.
+                Map<String, String> dimensions = new HashMap<String, String>();
+                ParseAnalytics.trackEventInBackground("do_not_rename", dimensions);
             }
         });
 
@@ -237,10 +254,18 @@ public class QueueActivity extends ActionBarActivity{
                 share.putExtra(Intent.EXTRA_SUBJECT, "Join this SongUs event");
                 share.putExtra(Intent.EXTRA_TEXT, "Scan this QR image with your SongUs app to join the event.\n\nGet the App here: "+getResources().getString(R.string.play_store_link));
                 startActivity(Intent.createChooser(share, "Share with"));
+
+                Map<String, String> dimensions = new HashMap<String, String>();
+                ParseAnalytics.trackEventInBackground("qr_share", dimensions);
+
                 qrDialog.dismiss();
             }
         });
         qrDialog.show();
+
+        Map<String, String> dimensions = new HashMap<String, String>();
+        dimensions.put("role", "host");
+        ParseAnalytics.trackEventInBackground("qr", dimensions);
     }
 
     public void play(View v){
@@ -251,7 +276,6 @@ public class QueueActivity extends ActionBarActivity{
         if(mBound) {
             mService.play();
             ((ViewFlipper)findViewById(R.id.playback_play_pause)).showNext();
-
         }
     }
 
@@ -372,10 +396,19 @@ public class QueueActivity extends ActionBarActivity{
 
                     public void onClick(DialogInterface dialog, int whichButton) {
                         songQueue.deleteEventually();
+                        Map<String, String> dimensions = new HashMap<String, String>();
+                        ParseAnalytics.trackEventInBackground("end_event", dimensions);
+
                         Intent i = new Intent(QueueActivity.this, JoinActivity.class);
                         startActivity(i);
                     }})
-                .setNegativeButton("No", null).show();
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Map<String, String> dimensions = new HashMap<String, String>();
+                        ParseAnalytics.trackEventInBackground("do_not_end_event", dimensions);
+                    }
+                }).show();
     }
 }
 

@@ -21,6 +21,7 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.jwetherell.quick_response_code.data.Contents;
 import com.jwetherell.quick_response_code.qrcode.QRCodeEncoder;
+import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.songus.AddSongActivity;
@@ -31,7 +32,9 @@ import com.songus.model.Song;
 import com.songus.model.SongQueue;
 import com.songus.songus.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class QueueActivity extends ActionBarActivity{
 
@@ -86,6 +89,11 @@ public class QueueActivity extends ActionBarActivity{
                 try {
                     refresh();
                     refreshLayout.setRefreshing(false);
+
+                    Map<String, String> dimensions = new HashMap<String, String>();
+                    dimensions.put("action", "pull");
+                    dimensions.put("role", "attendee");
+                    ParseAnalytics.trackEventInBackground("queue_refresh", dimensions);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -113,6 +121,10 @@ public class QueueActivity extends ActionBarActivity{
         if (id == R.id.action_refresh) {
             try {
                 refresh();
+                Map<String, String> dimensions = new HashMap<String, String>();
+                dimensions.put("action", "button");
+                dimensions.put("role", "attendee");
+                ParseAnalytics.trackEventInBackground("queue_refresh", dimensions);
                 return true;
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -164,6 +176,10 @@ public class QueueActivity extends ActionBarActivity{
             }
         });
         settingsDialog.show();
+
+        Map<String, String> dimensions = new HashMap<String, String>();
+        dimensions.put("role", "attendee");
+        ParseAnalytics.trackEventInBackground("qr", dimensions);
     }
 
     /**
@@ -171,9 +187,11 @@ public class QueueActivity extends ActionBarActivity{
      * @param v
      */
     public void endEvent(View v){
-        Toast.makeText(this, "Party's Over", Toast.LENGTH_SHORT);
         Intent i = new Intent(this, JoinActivity.class);
         startActivity(i);
+
+        Map<String, String> dimensions = new HashMap<String, String>();
+        ParseAnalytics.trackEventInBackground("leave", dimensions);
     }
 
 }

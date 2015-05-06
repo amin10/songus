@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +16,9 @@ import com.songus.host.NewEventActivity;
 import com.spotify.sdk.android.authentication.AuthenticationClient;
 import com.spotify.sdk.android.authentication.AuthenticationRequest;
 import com.spotify.sdk.android.authentication.AuthenticationResponse;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
@@ -39,6 +43,10 @@ public class JoinActivity extends Activity {
     }
 
     public void loginHost(View v){
+        Map<String, String> dimensions = new HashMap<String, String>();
+        dimensions.put("role", "host");
+        ParseAnalytics.trackEventInBackground("join", dimensions);
+
         Intent i = new Intent(this, NewEventActivity.class);
         startActivity(i);
     }
@@ -46,6 +54,9 @@ public class JoinActivity extends Activity {
     public void loginAttendee(View v){
         // Credit : http://stackoverflow.com/questions/8831050/android-how-to-read-qr-code-in-my-application
         try {
+            Map<String, String> dimensions = new HashMap<String, String>();
+            dimensions.put("role", "attendee");
+            ParseAnalytics.trackEventInBackground("join", dimensions);
 
             Intent intent = new Intent("com.google.zxing.client.android.SCAN");
             intent.putExtra("SCAN_MODE", "QR_CODE_MODE");

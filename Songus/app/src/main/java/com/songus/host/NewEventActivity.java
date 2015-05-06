@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -34,7 +35,9 @@ import com.spotify.sdk.android.authentication.AuthenticationResponse;
 import com.spotify.sdk.android.player.ConnectionStateCallback;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
@@ -47,12 +50,10 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-
 public class NewEventActivity extends ActionBarActivity implements ConnectionStateCallback {
 
     private Songus songus;
     private AuthenticationResponse.Type t;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +101,8 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                 });
             }
         });
+        Map<String, String> dimensions = new HashMap<String, String>();
+        ParseAnalytics.trackEventInBackground("new_event_from_empty", dimensions);
     }
     public void choosePlaylist(View v){
 
@@ -215,6 +218,8 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
                 }
             });
 
+        Map<String, String> dimensions = new HashMap<String, String>();
+        ParseAnalytics.trackEventInBackground("new_event_from_playlist", dimensions);
     }
     public void existingEvent(View v){
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -247,11 +252,15 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
 
         alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
-                // Canceled.
+                Map<String, String> dimensions = new HashMap<String, String>();
+                ParseAnalytics.trackEventInBackground("do_not_rejoin", dimensions);
             }
         });
 
         alert.show();
+
+        Map<String, String> dimensions = new HashMap<String, String>();
+        ParseAnalytics.trackEventInBackground("rejoin_attempt", dimensions);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -407,9 +416,7 @@ public class NewEventActivity extends ActionBarActivity implements ConnectionSta
     }
 
     @Override
-    public void onTemporaryError() {
-
-    }
+    public void onTemporaryError() {}
 
     @Override
     public void onConnectionMessage(String s) {

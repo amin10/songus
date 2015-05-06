@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.common.base.Joiner;
 import com.parse.GetCallback;
+import com.parse.ParseAnalytics;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -27,7 +28,9 @@ import com.songus.songus.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Track;
@@ -46,6 +49,10 @@ public class AddSongActivity extends ActionBarActivity {
         setContentView(R.layout.activity_add_song);
         qr = getIntent().getExtras().getString("QR");
         host = getIntent().getExtras().getBoolean("HOST");
+
+        Map<String, String> dimensions = new HashMap<String, String>();
+        dimensions.put("role", host?"host":"attendee");
+        ParseAnalytics.trackEventInBackground("add_song", dimensions);
     }
 
     private void startQueueActivity(){
@@ -72,6 +79,9 @@ public class AddSongActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_add_song) {
+            Map<String, String> dimensions = new HashMap<String, String>();
+            dimensions.put("role", host?"host":"attendee");
+            ParseAnalytics.trackEventInBackground("add_song_touch_menu_icon", dimensions);
             search();
             return true;
         }
@@ -85,21 +95,12 @@ public class AddSongActivity extends ActionBarActivity {
 
         EditText artistField= (EditText)findViewById(R.id.add_song_artist);
         String artist = artistField.getText().toString();
-//        EditText albumField= (EditText)findViewById(R.id.add_song_album);
-//        String album = albumField.getText().toString();
         EditText songField= (EditText)findViewById(R.id.add_song_song);
         String song = songField.getText().toString();
-//        EditText keywordsField= (EditText)findViewById(R.id.add_song_keyword);
-//        String keywords = keywordsField.getText().toString();
-//        keywords = Joiner.on('+').join(keywords.split("[^A-Za-z0-9_]+"));
         song = Joiner.on('+').join(song.split("[^A-Za-z0-9_]+"));
-//        album = Joiner.on('+').join(album.split("[^A-Za-z0-9_]+"));
         artist = Joiner.on('+').join(artist.split("[^A-Za-z0-9_]+"));
         ArrayList<String> queryBuilder = new ArrayList<>();
-//        if(!keywords.isEmpty())
-//            queryBuilder.add(keywords);
-//        if(!album.isEmpty())
-//            queryBuilder.add("album:"+album);
+
         if(!artist.isEmpty())
             queryBuilder.add("artist:"+artist);
         if(!song.isEmpty())
